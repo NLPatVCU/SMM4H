@@ -8,7 +8,8 @@ class Preprocessing:
         dataset = pd.read_csv(file, sep='\t')
         self.tweets = dataset['tweet'].tolist()
         tweets_no_html = self.remove_html(self.tweets)
-        tweets_no_hashtag = self.replace_hashtags(tweets_no_html)
+        tweets_punctuation = self.remove_punctuation(tweets_no_html)
+        tweets_no_hashtag = self.replace_hashtags(tweets_punctuation)
         tweets_no_links = self.replace_links(tweets_no_hashtag)
         tweets_no_usernames = self.replace_usernames(tweets_no_links)
         tweets = self.replace_emojis(tweets_no_usernames)
@@ -24,6 +25,15 @@ class Preprocessing:
             for label in self.labels:
                 labels_file.write("%i\n" % label)
         labels_file.close()
+
+    def remove_punctuation(self, tweets):
+        tweets_clean = []
+        for tweet in tweets:
+            tweet = tweet.replace('“', '')
+            tweet = tweet.replace('"', '')
+            tweets_clean.append(tweet)
+        return tweets_clean
+
 
     def replace_emojis(self, tweets):
         tweets_no_emojis = []
