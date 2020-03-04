@@ -17,36 +17,49 @@ from sklearn.model_selection import StratifiedKFold
 from RelEx_NN.model import evaluate
 
 
+def read_from_file(file):
+    """
+    Reads external files and insert the content to a list. It also removes whitespace
+    characters like `\n` at the end of each line
+
+    :param file: name of the input file.
+    :return : content of the file in list format
+    """
+    if not os.path.isfile(file):
+        raise FileNotFoundError("Not a valid file path")
+
+    with open(file) as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
+
+    return content
+
+
 class Data_Model:
-    def __init___(self, data_x, data_y, val_x, val_y, SMOTE_flag=False):
-        self.data_x = data_x
-        self.data_y = data_y
-        self.val_x = val_x
-        self.val_y = val_y
+    def __init___(self, x_data, y_data, x_val, y_val, max_words=5000, SMOTE_flag=False):
+        self.x_data = read_from_file(x_data)
+        self.y_data = read_from_file(y_data)
+        self.x_val = read_from_file(x_val)
+        self.y_val = read_from_file(y_val)
         self.SMOTE_flag = SMOTE_flag
-        self.x_train, self.y_train = self.create_model(data_x, data_y)
-        self.x_validation, self.y_validation = self.create_model(val_x, val_y)
+        self.max_words = max_words
 
+        self.y_train_data, self.labels, self.num_classes = self.binarize_labels(self.y_data)
+        self.y_validation_data = self.binarize_labels(self.y_val)[0]
+        self.x_train_data = self.tokenize(self.x_data)
+        self.x_validation_data = self.tokenize(self.x_val)
 
-        def create_model(self, x, y):
-            df_data = pd.DataFrame(x, columns=['tweet'])
-            df_label = pd.DataFrame(y, columns=['label'])
-            df_data.reset_index(drop=True, inplace=True)
-            df_label.reset_index(drop=True, inplace=True)
-            df = pd.concat((df_data, df_label), axis=1)
+    def binarize_labels(self, labels):
+        binarizer = LabelBinarizer()
+        binarizer.fit(labels)
+        labels = binarizer.classes_
+        print(labels)
+        num_classes = len(labels)
+        binary_Y = [int(label) for label in labels]
+        return binary_Y, labels, num_classes
 
-            binarizer = LabelBinarizer()
-            binarizer.fit(df['label'])
-            labels = binarizer.classes_
-            print(labels)
-            num_classes = len(labels)
-            tokenizer = Tokenizer(num_words=max_words, lower=True)
-            tokenizer.fit_on_texts(df['tweet'])
-            X_data = get_features(df['tweet'])
-            word_index = tokenizer.word_index
-            binary_y = binarizer.transform(df['label'])
-            binary_Y = []
-            for label_arr in binary_y:
-                for label in label_arr:
-                    binary_Y.append(label)
-            binary_Y = np.array(binary_Y)
+    def tokenize(self, sentences):
+        tokenizer = Tokenizer(num_words=max_words, lower=True)
+        tokenizer.fit_on_texts(sentences)
+        X_data_tokenized = get_features(sentences)
+        return X_data_tokenized

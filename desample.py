@@ -1,6 +1,7 @@
 from sklearn.utils import shuffle
 from random import seed
 from random import randint
+import sys
 
 def desample(labels, sentences, ratio1, ratio2, ratio1_label, ratio2_label):
     """
@@ -70,7 +71,17 @@ with open("tweets") as tweets_file_processed:
     tweets = [tweet.rstrip() for tweet in tweets_file_processed]
     tweets_file_processed.close()
 
-sentences, labels = desample(labels, tweets, 1, 8, 1, 0)
+with open("labels_val") as label_file_processed_val:
+    labels_val = [int(label.rstrip()) for label in label_file_processed_val]
+    label_file_processed_val.close()
+
+with open("tweets_val") as tweets_file_processed_val:
+    tweets_val = [tweet.rstrip() for tweet in tweets_file_processed_val]
+    tweets_file_processed_val.close()
+
+sentences, labels = desample(labels, tweets, 1, int(sys.argv[0]), 1, 0)
+
+sentences_val, labels_val = desample(labels_val, tweets_val,  int(sys.argv[0]), 1, 1, 0)
 
 
 with open("tweets_desample", "w") as tweets_file:
@@ -82,3 +93,13 @@ with open("labels_desample", "w") as labels_file:
     for label in labels:
         labels_file.write("%i\n" % label)
     labels_file.close()
+
+with open("tweets_desample_val", "w") as tweets_file_val:
+    for sentence in sentences_val:
+        tweets_file_val.write(sentence +"\n")
+    tweets_file_val.close()
+
+with open("labels_desample_val", "w") as labels_file_val:
+    for label in labels_val:
+        labels_file_val.write("%i\n" % label)
+    labels_file_val.close()

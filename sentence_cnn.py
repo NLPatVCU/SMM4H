@@ -12,11 +12,10 @@ from keras.models import *
 
 class Sentence_CNN:
 
-    def __init__(self, embedding_path, class_weight = False, cross_validation = True, epochs=20, batch_size=512, filters=32, filter_conv=1, filter_maxPool=5,
-                 activation='relu', output_activation='sigmoid', drop_out=0.5, loss='sparse_categorical_crossentropy',optimizer='rmsprop', metrics=['accuracy']):
+    def __init__(self, class_weight = False, cross_validation = True, epochs=20, batch_size=512, filters=32, filter_conv=1, filter_maxPool=5,
+                 activation='relu', output_activation='sigmoid', drop_out=0.5, loss='sparse_categorical_crossentropy',optimizer='rmsprop', metrics=['accuracy'], output_path="/results.txt"):
 
         self.data_model = model
-        self.embedding = read_embeddings_from_file(embedding_path)
         self.cv = cross_validation
         self.epochs = epochs
         self.batch_size = batch_size
@@ -29,32 +28,18 @@ class Sentence_CNN:
         self.loss = loss
         self.optimizer = optimizer
         self.metrics = metrics
+        self.output_path = output_path
+
+        self.x_train_data = self.data_model.x_train
+        self.y_train_data = self.data_model.y_train
+        self.x_validation_data = self.data_model.x_val
+        self.y_validation_data = self.data_model.y_val
+        self.labels = self.data_model.labels
 
         if self.cv:
             self.cross_validate()
         else:
             self.test()
-
-    def read_embeddings_from_file(path):
-        """
-        Function to read external embedding files to build an index mapping words (as strings)
-        to their vector representation (as number vectors).
-        :return dictionary: word vectors
-        """
-        print("Reading external embedding file ......")
-        if not os.path.isfile(path):
-            raise FileNotFoundError("Not a valid file path")
-
-        embeddings_index = {}
-        with open(path) as f:
-            next(f)
-            for line in f:
-                values = line.split()
-                word = values[0]
-                coefs = np.asarray(values[1:], dtype='float32')
-                embeddings_index[word] = coefs
-            f.close()
-        return embeddings_index
 
     def fit_Model(self, model, x_train, y_train):
         """
@@ -76,7 +61,6 @@ class Sentence_CNN:
 
         return model, loss, acc
 
-
     def predict(model, x_test, y_test, encoder_classes):
         """
         Takes the predictions as input and returns the indices of the maximum values along an axis using numpy argmax function as true labels.
@@ -97,7 +81,6 @@ class Sentence_CNN:
         print("Loss : ", test_loss)
 
         return y_pred, y_true
-
 
     def cv_evaluation_fold(y_pred, y_true, labels):
         """
@@ -128,17 +111,20 @@ class Sentence_CNN:
 
         return fold_statistics
 
+    def results_to_file(self):
+        print(self.output_path)
+        print("This isn't finished yet. When it is finished ")
 
     def cv(self, folds=5):
         skf = StratifiedKFold(n_splits=folds, shuffle=True)
-        skf.get_n_splits(x_train_data, y_train_data)
+        skf.get_n_splits(self.x_train_data, self.y_train_data)
 
         fold = 1
 
-        for train_index, test_index in skf.split(x_train_data, y_train_data):
+        for train_index, test_index in skf.split(self.x_train_data, self.y_train_data):
 
-            x_train, x_test = x_train_data[train_index], x_train_data[test_index]
-            y_train, y_test = y_train_data[train_index], y_train_data[test_index]
+            x_train, x_test = self.x_train_data[train_index], self.x_train_data[test_index]
+            y_train, y_test = self.y_train_data[train_index], self.y_train_data[test_index]
             print("Training Fold %i" % fold)
 
             model = Sequential()
@@ -154,21 +140,21 @@ class Sentence_CNN:
             model.compile(optimizer=self.optimizer, loss=self.loss, metrics=self.metrics)
 
             cv_model, loss, acc = fit_Model(model, x_train, y_train)
-            y_pred, y_true = evaluate.predict(cv_model, x_test, y_test, labels)
+            y_pred, y_true = evaluate.predict(cv_model, x_test, y_test, self.labels)
             y_true = [str(lab) for lab in y_true]
             print("--------------------------- Results ------------------------------------")
-            print(classification_report(y_true, y_pred, labels=labels))
+            print(classification_report(y_true, y_pred, labels=self.labels))
             print(confusion_matrix(y_true, y_pred))
-            fold_statistics = self.cv_evaluation_fold(y_pred, y_true, labels=labels)
+            fold_statistics = self.cv_evaluation_fold(y_pred, y_true, labels=self.labels)
             fold += 1
 
-        y_pred_val, y_true_val = self.predict(cv_model, x_val, y_val, labels)
+        y_pred_val, y_true_val = self.predict(cv_model, self.x_validation_data, self.y_validation_data, self.labels)
         y_true_val = [str(lab) for lab in y_true_val]
         print("--------------------------- Results ------------------------------------")
-        print(classification_report(y_true_val, y_pred_val, labels=labels))
+        print(classification_report(y_true_val, y_pred_val, labels=self.labels))
         print(confusion_matrix(y_true_val, y_pred_val))
         if write_results_file:
             output_to_file(np_true, np_pred, labels)
 
     def test(self):
-        print("This hasn't been finished yet.")
+        print("This hasn't been finished yet. When it is finished, it will do split/train/test.")
