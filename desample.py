@@ -63,43 +63,43 @@ def desample(labels, sentences, ratio1, ratio2, ratio1_label, ratio2_label):
 
     return sentences_desampled_shuffled, labels_desampled_shuffled
 
-with open("labels") as label_file_processed:
+with open("./data/train/labels") as label_file_processed:
     labels = [int(label.rstrip()) for label in label_file_processed]
     label_file_processed.close()
 
-with open("tweets") as tweets_file_processed:
+with open("./data/train/tweets") as tweets_file_processed:
     tweets = [tweet.rstrip() for tweet in tweets_file_processed]
     tweets_file_processed.close()
 
-with open("labels_val") as label_file_processed_val:
+with open("./data/validation/labels_val") as label_file_processed_val:
     labels_val = [int(label.rstrip()) for label in label_file_processed_val]
     label_file_processed_val.close()
 
-with open("tweets_val") as tweets_file_processed_val:
+with open("./data/validation/tweets_val") as tweets_file_processed_val:
     tweets_val = [tweet.rstrip() for tweet in tweets_file_processed_val]
     tweets_file_processed_val.close()
 
-sentences, labels = desample(labels, tweets, 1, int(sys.argv[0]), 1, 0)
+sentences, labels = desample(labels, tweets, 1, int(sys.argv[1]), 1, 0)
 
-sentences_val, labels_val = desample(labels_val, tweets_val,  int(sys.argv[0]), 1, 1, 0)
+sentences_val, labels_val = desample(labels_val, tweets_val,  1, int(sys.argv[1])  , 1, 0)
 
 
-with open("tweets_desample", "w") as tweets_file:
+with open("./data/train/tweets_desample", "w") as tweets_file:
     for sentence in sentences:
         tweets_file.write(sentence +"\n")
     tweets_file.close()
 
-with open("labels_desample", "w") as labels_file:
+with open("./data/train/labels_desample", "w") as labels_file:
     for label in labels:
         labels_file.write("%i\n" % label)
     labels_file.close()
 
-with open("tweets_desample_val", "w") as tweets_file_val:
+with open("./data/train/tweets_desample_val", "w") as tweets_file_val:
     for sentence in sentences_val:
         tweets_file_val.write(sentence +"\n")
     tweets_file_val.close()
 
-with open("labels_desample_val", "w") as labels_file_val:
+with open("./data/train/labels_desample_val", "w") as labels_file_val:
     for label in labels_val:
         labels_file_val.write("%i\n" % label)
     labels_file_val.close()

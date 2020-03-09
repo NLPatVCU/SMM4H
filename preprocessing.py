@@ -15,13 +15,13 @@ class Preprocessing:
         tweets = self.replace_emojis(tweets_no_usernames)
         print(tweets)
 
-        with open("tweets", "w") as tweets_file:
+        with open("./data/validation/tweets_val", "w") as tweets_file:
             for tweet in tweets:
                 tweets_file.write("\n" + tweet)
         tweets_file.close()
 
         self.labels = dataset['class'].tolist()
-        with open("labels", "w") as labels_file:
+        with open("./data/validation/labels_val", "w") as labels_file:
             for label in self.labels:
                 labels_file.write("%i\n" % label)
         labels_file.close()
@@ -106,4 +106,4 @@ class Preprocessing:
         return tweets_no_html
 
 
-o1 = Preprocessing("task2_en_training.tsv")
+o1 = Preprocessing("./data/validation/task2_en_validation.tsv")

@@ -62,4 +62,17 @@ class Data_Model:
         tokenizer = Tokenizer(num_words=max_words, lower=True)
         tokenizer.fit_on_texts(sentences)
         X_data_tokenized = get_features(sentences)
-        return X_data_tokenized
+        return tokenizer, X_data_tokenized
+
+    def create_embedding(self):
+        word_index = tokenizer.word_index
+        embedding_matrix = np.zeros((max_words, embedding_dim))
+        for word, i in word_index.items():
+            embedding_vector = embeddings_index.get(word)
+            if i < max_words:
+                if embedding_vector is not None:
+                    # Words not found in embedding index will be all-zeros.
+                    embedding_matrix[i] = embedding_vector
+            return embedding_matrix
+
+    def read_embedding(self):

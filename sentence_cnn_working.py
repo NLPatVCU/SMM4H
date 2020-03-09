@@ -1,4 +1,4 @@
-import sys
+  import sys
 sys.path.append("../Sam/RelEx/relex")
 
 import os
@@ -24,10 +24,15 @@ SMOTE_flag = False
 class_weights = False
 cv = True
 write_results_file = False
-if sys.argv[0] == "mimic300":
-    embedding_path = "../Sam/word_embeddings/mimic3_d300.txt"
-if sys.argv[0] == "glove200twitter":
-    embedding_path = "../Sam/word_embeddings/glove.twitter.27b.200d.txt"
+if sys.argv[1] == "glove100twitter":
+    embedding_path = "../embeddings/glove.twitter.27b.100d.txt"
+if sys.argv[1] == "glove200twitter":
+    embedding_path = "../embeddings/glove.twitter.27b.200d.txt"
+if sys.argv[1] == "glove50":
+    embedding_path = "../embeddings/glove.twitter.27b.50d.txt"
+if sys.argv[1] == "glove25":
+    embedding_path = "../embeddings/glove.twitter.27b.25d.txt"
+
 results_txt_path = "/home/cora/Desktop/"
 results_csv_path = "/home/cora/Desktop/"
 
@@ -118,9 +123,9 @@ def output_to_file(true, pred, target):
     csv_file.close()
 
 embeddings_index = read_embeddings_from_file(embedding_path)
-embedding_dim = int(sys.argv[1])
+embedding_dim = int(sys.argv[2])
 maxlen = 300
-max_words = 5000
+max_words = 10000
 
 
 embeddings_index = {}
@@ -134,17 +139,17 @@ with open(embedding_path) as f:
     f.close()
 
 
-if sys.argv[2] == "desample_val":
+if sys.argv[3] == "desample_val":
     x_data_val = read_from_file("tweets_desample_val")
     y_data_val = read_from_file("labels_desample_val")
     train_data = read_from_file("tweets_desample")
     train_labels = read_from_file("labels_desample")
-if sys.argv[2] == "desample":
+if sys.argv[3] == "desample":
     x_data_val = read_from_file("tweets_val")
     y_data_val = read_from_file("labels_val")
     train_data = read_from_file("tweets_desample")
     train_labels = read_from_file("labels_desample")
-if sys.argv[2] = "no_desample":
+if sys.argv[3] = "no_desample":
     x_data_val = read_from_file("tweets_val")
     y_data_val = read_from_file("labels_val")
     train_data = read_from_file("tweets")
