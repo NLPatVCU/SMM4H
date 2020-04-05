@@ -1,4 +1,4 @@
-  import sys
+import sys
 sys.path.append("../Sam/RelEx/relex")
 
 import os
@@ -14,24 +14,53 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import confusion_matrix
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE, RandomOverSampler, ADASYN
 from keras.layers import *
 from keras.models import *
 from sklearn.model_selection import StratifiedKFold
 from RelEx_NN.model import evaluate
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.combine import SMOTETomek, SMOTEENN
 
-SMOTE_flag = False
-class_weights = False
-cv = True
+
+if sys.argv[5] == "imb_algo":
+    imb_algo = True
+else:
+    imb_algo = False
+if sys.argv[4] == "class_weights":
+    class_weights_flag = True
+else:
+    class_weights_flag = False
+cv_cnn = True
+cv_rnn = False
+if cv_rnn:
+    lstm = False
+    rnn_simple = False
+    rnn_adv = False
 write_results_file = False
+print(sys.argv[1])
 if sys.argv[1] == "glove100twitter":
-    embedding_path = "../embeddings/glove.twitter.27b.100d.txt"
-if sys.argv[1] == "glove200twitter":
-    embedding_path = "../embeddings/glove.twitter.27b.200d.txt"
-if sys.argv[1] == "glove50":
-    embedding_path = "../embeddings/glove.twitter.27b.50d.txt"
-if sys.argv[1] == "glove25":
-    embedding_path = "../embeddings/glove.twitter.27b.25d.txt"
+    embedding_path = "../embeddings/glove.twitter.27B.100d.txt"
+elif sys.argv[1] == "glove200twitter":
+    embedding_path = "../embeddings/glove.twitter.27B.200d.txt"
+elif sys.argv[1] == "glove50twitter":
+    embedding_path = "../embeddings/glove.twitter.27B.50d.txt"
+elif sys.argv[1] == "glove50":
+    embedding_path = "../embeddings/glove.6B.50d.txt"
+elif sys.argv[1] == "glove100":
+    embedding_path = "../embeddings/glove.6B.100d.txt"
+elif sys.argv[1] == "glove200":
+    embedding_path = "../embeddings/glove.6B.200d.txt"
+elif sys.argv[1] == "glove300":
+    embedding_path = "../embeddings/glove.6B.300d.txt"
+elif sys.argv[1] == "mimic200":
+    embedding_path = "../embeddings/mimic3_d200.bin"
+elif sys.argv[1] == "mimic300":
+    embedding_path = "../embeddings/mimic3_d300.txt"
+elif sys.argv[1] == "mimic400":
+    embedding_path = "../embeddings/mimic3_d400.txt"
+elif sys.argv[1] == "wikipubmed":
+    embedding_path = "../embeddings/wiki_pubmed.bin"
 
 results_txt_path = "/home/cora/Desktop/"
 results_csv_path = "/home/cora/Desktop/"
@@ -64,7 +93,7 @@ def read_embeddings_from_file(path):
         raise FileNotFoundError("Not a valid file path")
 
     embeddings_index = {}
-    with open(path) as f:
+    with open(path, mode="rb") as f:
         next(f)
         for line in f:
             values = line.split()
@@ -95,9 +124,21 @@ def fit_Model(model, x_train, y_train):
     :param y_train: training labels
     :return:
     """
-    class_weights= {0:1, 1:10}
-    history = model.fit(x_train, y_train, epochs=20,
-                        batch_size=512, class_weight=class_weights)
+    class_weights= {0:0.5510434, 1:5.39779296}
+    if class_weights_flag and cv_cnn:
+        class_weights= {0:0.5510434, 1:5.39779296}
+        history = model.fit(x_train, y_train, epochs=20,
+                            batch_size=512, class_weight=class_weights)
+    elif class_weights_flag and cv_rnn:
+        class_weights= {0:0.5510434, 1:5.39779296}
+        history = model.fit(x_train, y_train, epochs=10,
+                            batch_size=128, class_weight=class_weights)
+    elif cv_rnn:
+        history = model.fit(x_train, y_train, epochs=10,
+                            batch_size=128)
+    else:
+        history = model.fit(x_train, y_train, epochs=10,
+                            batch_size=128, class_weight=class_weights)
     loss = history.history['loss']
     acc = history.history['acc']
 
@@ -138,23 +179,20 @@ with open(embedding_path) as f:
         embeddings_index[word] = coefs
     f.close()
 
-
-if sys.argv[3] == "desample_val":
-    x_data_val = read_from_file("tweets_desample_val")
-    y_data_val = read_from_file("labels_desample_val")
-    train_data = read_from_file("tweets_desample")
-    train_labels = read_from_file("labels_desample")
 if sys.argv[3] == "desample":
-    x_data_val = read_from_file("tweets_val")
-    y_data_val = read_from_file("labels_val")
-    train_data = read_from_file("tweets_desample")
-    train_labels = read_from_file("labels_desample")
-if sys.argv[3] = "no_desample":
-    x_data_val = read_from_file("tweets_val")
-    y_data_val = read_from_file("labels_val")
-    train_data = read_from_file("tweets")
-    train_labels = read_from_file("labels")
+    x_data_val = read_from_file("data/validation/tweets_val")
+    y_data_val = read_from_file("data/validation/labels_val")
+    train_data = read_from_file("data/train/tweets_desample")
+    train_labels = read_from_file("data/train/labels_desample")
+elif sys.argv[3] == "no_desample":
+    x_data_val = read_from_file("data/validation/tweets_val")
+    y_data_val = read_from_file("data/validation/labels_val")
+    train_data = read_from_file("data/train/tweets")
+    train_labels = read_from_file("data/train/labels")
 
+print(len(train_data))
+print(len(train_labels))
+print()
 print(len(y_data_val))
 print(len(x_data_val))
 
@@ -200,7 +238,7 @@ binarizer_val = LabelBinarizer()
 binarizer_val.fit(df_val['label'].astype(str))
 labels_val = binarizer_val.classes_
 
-tokenizer_val = Tokenizer(num_words=max_words, lower=True)
+tokenizer_val = Tokenizer(num_words=max_words, lower=False)
 tokenizer_val.fit_on_texts(df_val['tweet'])
 X_data_val = get_features(df_val['tweet'])
 binary_y_val = binarizer_val.transform(df_val['label'].astype(str))
@@ -211,9 +249,21 @@ for label_arr in binary_y_val:
 binary_Y_val = np.array(binary_Y_val)
 
 
-if SMOTE_flag:
-    sm = SMOTE(random_state = 2)
-    x_train_data, y_train_data = sm.fit_sample(X_data, binary_Y.ravel())
+if imb_algo:
+    if sys.argv[6] == "SMOTE":
+        algo = SMOTE()
+    elif sys.argv[6] == "ADASYN":
+        algo = ADAYSN()
+    elif sys.argv[6] == "RandomOver":
+        algo = RandomOverSampler()
+    elif sys.argv[6] == "RandomUnder":
+        algo = RandomUnderSampled()
+    elif sys.argv[6] == "SMOTEENN":
+        algo = SMOTEENN()
+    elif sys.argv[6] == "SMOTETomek":
+        algo = SMOTETomek()
+
+    x_train_data, y_train_data = algo.fit_sample(X_data, binary_Y.ravel())
     x_val = X_data_val
     y_val = binary_Y_val
 else:
@@ -225,7 +275,7 @@ else:
 print(binary_Y_val)
 print(x_val)
 
-if cv:
+if cv_cnn:
     skf = StratifiedKFold(n_splits=5, shuffle=True)
     skf.get_n_splits(x_train_data, y_train_data)
 
@@ -292,34 +342,80 @@ if cv:
     print(confusion_matrix(y_true_val, y_pred_val))
     if write_results_file:
         output_to_file(np_true, np_pred, labels)
+
+elif cv_rnn:
+    skf = StratifiedKFold(n_splits=5, shuffle=True)
+    skf.get_n_splits(x_train_data, y_train_data)
+
+    fold = 1
+    originalclass = []
+    predictedclass = []
+
+
+    for train_index, test_index in skf.split(x_train_data, y_train_data):
+
+        x_train, x_test = x_train_data[train_index], x_train_data[test_index]
+        y_train, y_test = y_train_data[train_index], y_train_data[test_index]
+        print("Training Fold %i" % fold)
+        print(len(x_train), len(x_test))
+        filter_length = 32
+
+        if lstm:
+            model = Sequential()
+            model.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=maxlen))
+            model.add(LSTM(32))
+            model.add(Dense(1, activation='sigmoid'))
+            model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+
+        elif rnn_simple:
+            model = Sequential()
+            model.add(Embedding(max_words, 32))
+            model.add(SimpleRNN(32))
+            model.add(Dense(1, activation='sigmoid'))
+            model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+
+        elif rnn_adv:
+            model = Sequential()
+            model.add(Embedding(max_words, 32))
+            model.add(SimpleRNN(32, return_sequences=True))
+            model.add(SimpleRNN(32, return_sequences=True))
+            model.add(SimpleRNN(32, return_sequences=True))
+            model.add(SimpleRNN(32))
+            model.add(Dense(1, activation='sigmoid'))
+            model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+
+        cv_model, loss, acc = fit_Model(model, x_train, y_train)
+        y_pred, y_true = evaluate.predict(cv_model, x_test, y_test, labels)
+        y_true = [str(lab) for lab in y_true]
+        originalclass.extend(y_true)
+        predictedclass.extend(y_pred)
+        print("--------------------------- Results ------------------------------------")
+        print(classification_report(y_true, y_pred, labels=labels))
+        print(confusion_matrix(y_true, y_pred))
+        fold_statistics = evaluate.cv_evaluation_fold(y_pred, y_true, labels=labels)
+        fold += 1
+
+
+    y_pred_val, y_true_val = evaluate.predict(cv_model, x_val, y_val, labels)
+    y_true_val = [str(lab) for lab in y_true_val]
+    print("--------------------------- Results ------------------------------------")
+    print(classification_report(y_true_val, y_pred_val, labels=labels))
+    print(confusion_matrix(y_true_val, y_pred_val))
+
 else:
     # train - test split
 
-    x_train, x_test, y_train, y_test = train_test_split(X_data, binary_Y, test_size=0.2, random_state=9000)
     filter_length = 32
 
     model = Sequential()
-    model.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=maxlen))
-    model.add(Conv1D(filter_length, 1, activation='relu'))
-    model.add(MaxPool1D(5))
-    model.add(Conv1D(filter_length, 1, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Flatten())
-    model.add(Dense(32, activation='relu'))
-    model.add(Dense(2, activation='sigmoid'))
-    model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-    model.summary()
+    model.add(Embedding(max_words, 32))
+    model.add(SimpleRNN(32))
+    model.add(Dense(1, activation='sigmoid'))
+    model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+    cv_model, loss, acc = fit_Model(model, x_train_data, y_train_data)
 
-    history = model.fit(x_train, y_train,
-                        epochs=20,
-                        batch_size=512,
-                        validation_split=0.1)
-    metrics = model.evaluate(x_test, y_test)
-    print("{}: {}".format(model.metrics_names[0], metrics[0]))
-    print("{}: {}".format(model.metrics_names[1], metrics[1]))
-    y_pred = np.array(model.predict(x_test))
-
-
-    print(classification_report(y_test, y_pred, target_names=labels))
-    if write_results_file:
-        output_to_file(np_true, np_pred, labels)
+    y_pred_val, y_true_val = evaluate.predict(cv_model, x_val, y_val, labels)
+    y_true_val = [str(lab) for lab in y_true_val]
+    print("--------------------------- Results ------------------------------------")
+    print(classification_report(y_true_val, y_pred_val, labels=labels))
+    print(confusion_matrix(y_true_val, y_pred_val))

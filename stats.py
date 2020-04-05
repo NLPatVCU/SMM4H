@@ -1,8 +1,8 @@
-with open("labels") as label_file_processed:
+with open("data/train/labels") as label_file_processed:
     labels = [int(label.rstrip()) for label in label_file_processed]
     label_file_processed.close()
 
-with open("labels_val") as label_file_processed:
+with open("data/train/labels_val") as label_file_processed:
     labels_val = [int(label.rstrip()) for label in label_file_processed]
     label_file_processed.close()
 

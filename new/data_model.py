@@ -14,7 +14,6 @@ from imblearn.over_sampling import SMOTE
 from keras.layers import *
 from keras.models import *
 from sklearn.model_selection import StratifiedKFold
-from RelEx_NN.model import evaluate
 
 
 def read_from_file(file):
@@ -36,18 +35,24 @@ def read_from_file(file):
 
 
 class Data_Model:
-    def __init___(self, x_data, y_data, x_val, y_val, max_words=5000, SMOTE_flag=False):
+    def __init__(self, x_data, y_data, x_val, y_val, embedding_path, embedding_demension = 50, max_words=10000, max_len=300, SMOTE_flag=False):
         self.x_data = read_from_file(x_data)
         self.y_data = read_from_file(y_data)
         self.x_val = read_from_file(x_val)
         self.y_val = read_from_file(y_val)
         self.SMOTE_flag = SMOTE_flag
         self.max_words = max_words
+        self.max_len = max_len
+        self.embedding_path = embedding_path
+        self.embedding_demension = embedding_demension
 
         self.y_train_data, self.labels, self.num_classes = self.binarize_labels(self.y_data)
         self.y_validation_data = self.binarize_labels(self.y_val)[0]
-        self.x_train_data = self.tokenize(self.x_data)
-        self.x_validation_data = self.tokenize(self.x_val)
+        self.tokenizer, self.x_train_data = self.tokenize(self.x_data)
+        self.x_validation_data = self.tokenize(self.x_val)[1]
+
+        self.embeddings_index = self.read_embeddings_from_file(self.embedding_path)
+        self.embedding = self.create_embedding()
 
     def binarize_labels(self, labels):
         binarizer = LabelBinarizer()
@@ -59,20 +64,42 @@ class Data_Model:
         return binary_Y, labels, num_classes
 
     def tokenize(self, sentences):
-        tokenizer = Tokenizer(num_words=max_words, lower=True)
+        tokenizer = Tokenizer(num_words=self.max_words, lower=False)
         tokenizer.fit_on_texts(sentences)
-        X_data_tokenized = get_features(sentences)
+        sequences = tokenizer.texts_to_sequences(sentences)
+        X_data_tokenized = pad_sequences(sequences, maxlen=self.max_len)
         return tokenizer, X_data_tokenized
 
     def create_embedding(self):
-        word_index = tokenizer.word_index
-        embedding_matrix = np.zeros((max_words, embedding_dim))
+        word_index = self.tokenizer.word_index
+        embedding_matrix = np.zeros((self.max_words, self.embedding_demension))
         for word, i in word_index.items():
-            embedding_vector = embeddings_index.get(word)
-            if i < max_words:
+            embedding_vector = self.embeddings_index.get(word)
+            if i < self.max_words:
                 if embedding_vector is not None:
                     # Words not found in embedding index will be all-zeros.
                     embedding_matrix[i] = embedding_vector
             return embedding_matrix
 
-    def read_embedding(self):
+    def read_embeddings_from_file(self, path):
+        """
+        Function to read external embedding files to build an index mapping words (as strings)
+        to their vector representation (as number vectors).
+        :return dictionary: word vectors
+        """
+        print("Reading external embedding file ......")
+        if not os.path.isfile(path):
+            raise FileNotFoundError("Not a valid file path")
+
+        embeddings_index = {}
+        with open(path) as f:
+            next(f)
+            for line in f:
+                values = line.split()
+                word = values[0]
+                coefs = np.asarray(values[1:], dtype='float32')
+                embeddings_index[word] = coefs
+            f.close()
+        return embeddings_index
+
+o1 = Data_Model("../data/train/tweets", "../data/train/labels", "../data/validation/tweets_val", "../data/validation/labels_val", "../../embeddings/glove.6B.50d.txt")

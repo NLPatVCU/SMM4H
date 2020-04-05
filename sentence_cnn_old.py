@@ -1,7 +1,6 @@
 import sys
 sys.path.append("../Sam/RelEx/relex")
 
-import io
 import os
 import pandas as pd
 import sys
@@ -15,15 +14,16 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import confusion_matrix
-from imblearn.over_sampling import SMOTE, ADASYN
+from imblearn.over_sampling import SMOTE
 from keras.layers import *
 from keras.models import *
 from sklearn.model_selection import StratifiedKFold
 from RelEx_NN.model import evaluate
-import numpy as np
 
+SMOTE_flag = False
 cv = True
-write_results_file = False
+
+embedding_path = "../embeddings/glove.6B.200d.txt"
 
 
 def read_from_file(file):
@@ -53,27 +53,14 @@ def read_embeddings_from_file(path):
         raise FileNotFoundError("Not a valid file path")
 
     embeddings_index = {}
-    with open(path, encoding='utf-8', errors='ignore') as f:
+    with open(path) as f:
         next(f)
         for line in f:
-            values = line.split(" ")
+            values = line.split()
             word = values[0]
-                # for use with twitter word embedding
-            if sys.argv[1] == "word2vectwitter" or sys.argv[1] == "fasttext":
-                vector = []
-                error_count = 0
-                for val in values[1:]:
-                    if val != "\n":
-                        try:
-                            val_float = float(val)
-                            vector.append(val_float)
-                        except ValueError:
-                            print("error")
-                coefs = np.asarray(vector)
-            else:
-                coefs = np.asarray(values[1:], dtype='float32')
+            coefs = np.asarray(values[1:], dtype='float32')
             embeddings_index[word] = coefs
-    f.close()
+        f.close()
     return embeddings_index
 
 def get_features(text_series):
@@ -99,38 +86,18 @@ def fit_Model(model, x_train, y_train):
     """
     if sys.argv[3] == "weights":
         class_weight= {0:int(sys.argv[5]), 1:int(sys.argv[6])}
-        history = model.fit(x_train, y_train, epochs=20,
+        history = model.fit(x_train, y_train, epochs=10,
                             batch_size=512, class_weight=class_weight)
         loss = history.history['loss']
-        acc = history.history['accuracy']
+        acc = history.history['acc']
     else:
         history = model.fit(x_train, y_train, epochs=20,
                             batch_size=512)
-        print(history.history.keys())
         loss = history.history['loss']
-        acc = history.history['accuracy']
-
+        acc = history.history['acc']
 
     return model, loss, acc
 
-def output_to_file(true, pred, target):
-    """
-    Function to create .txt file and csv file of classification report
-    """
-    report = classification_report(true, pred, target_names=target)
-    report_dict = classification_report(true, pred, target_names=target, output_dict=True)
-    df_report = pd.DataFrame(report_dict).transpose()
-
-    #writes .txt file with results
-    txt_file = open(output_txt_path, 'a')
-    txt_file.write(report)
-    txt_file.close()
-
-    # writes csv file
-    csv_report = df_report.to_csv()
-    csv_file = open(output_csv_path, 'a')
-    csv_file.write(csv_report)
-    csv_file.close()
 
 if sys.argv[1] == "glove100twitter":
     embedding_path = "../embeddings/glove.twitter.27B.100d.txt"
@@ -153,20 +120,7 @@ elif sys.argv[1] == "mimic300":
 elif sys.argv[1] == "mimic400":
     embedding_path = "../embeddings/mimic3_d400.txt"
 elif sys.argv[1] == "wikipubmed":
-    embedding_path = "../embeddings/wikipubmed.bin"
-elif sys.argv[1] == "wiki":
-    embedding_path = "../embeddings/wikivectors.200.bin"
-elif sys.argv[1] == "fasttext":
-    embedding_path ="../embeddings/fastText_pretrained_twitter.vec"
-elif sys.argv[1] == "word2vectwitter":
-    embedding_path ="../embeddings/word2vectwitter_text.bin"
-
-embeddings_index = read_embeddings_from_file(embedding_path)
-embedding_dim = int(sys.argv[2])
-maxlen = 300
-max_words = 5000
-
-
+    embedding_path = "../embeddings/wiki_pubmed.bin"
 
 if sys.argv[3] == "desample":
     x_data_val = read_from_file("data/validation/tweets_val")
@@ -183,6 +137,22 @@ elif sys.argv[3] == "oversample":
     y_data_val = read_from_file("data/validation/labels_val")
     train_data = read_from_file("data/train/tweets_oversample")
     train_labels = read_from_file("data/train/labels_oversample")
+
+embeddings_index = read_embeddings_from_file(embedding_path)
+embedding_dim = int(sys.argv[2])
+maxlen = 300
+max_words = 5000
+
+
+embeddings_index = {}
+with open(embedding_path) as f:
+    next(f)
+    for line in f:
+        values = line.split()
+        word = values[0]
+        coefs = np.asarray(values[1:], dtype='float32')
+        embeddings_index[word] = coefs
+    f.close()
 
 print(len(y_data_val))
 print(len(x_data_val))
@@ -203,7 +173,6 @@ tokenizer = Tokenizer(num_words=max_words, lower=True)
 tokenizer.fit_on_texts(df['tweet'])
 X_data = get_features(df['tweet'])
 word_index = tokenizer.word_index
-
 embedding_matrix = np.zeros((max_words, embedding_dim))
 for word, i in word_index.items():
     embedding_vector = embeddings_index.get(word)
@@ -244,11 +213,6 @@ binary_Y_val = np.array(binary_Y_val)
 if sys.argv[4] == "SMOTE":
     sm = SMOTE(random_state = 2)
     x_train_data, y_train_data = sm.fit_sample(X_data, binary_Y.ravel())
-    x_val = X_data_val
-    y_val = binary_Y_val
-elif sys.argv[4] == "ADASYN":
-    a = ADASYN(random_state = 2)
-    x_train_data, y_train_data = a.fit_sample(X_data, binary_Y.ravel())
     x_val = X_data_val
     y_val = binary_Y_val
 else:

@@ -1,0 +1,5 @@
+glove50
+Reading external embedding file ......
+5134
+5134
+['0' '1']
