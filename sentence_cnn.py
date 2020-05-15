@@ -5,6 +5,7 @@ import io
 import os
 import pandas as pd
 import sys
+import keras
 from sklearn.model_selection import StratifiedKFold
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
@@ -21,9 +22,18 @@ from keras.models import *
 from sklearn.model_selection import StratifiedKFold
 from RelEx_NN.model import evaluate
 import numpy as np
+from keras_wc_embd import get_dicts_generator, get_embedding_layer, get_embedding_weights_from_file
+import tensorflow as tf
+import chars2vec
+
+
+from tensorflow import set_random_seed
+set_random_seed(42)
 
 cv = True
 write_results_file = False
+char = False
+char_2 = True
 
 
 def read_from_file(file):
@@ -56,9 +66,9 @@ def read_embeddings_from_file(path):
     with open(path, encoding='utf-8', errors='ignore') as f:
         next(f)
         for line in f:
-            values = line.split(" ")
+            values = line.split()
             word = values[0]
-                # for use with twitter word embedding
+            # for use with twitter word embedding
             if sys.argv[1] == "word2vectwitter" or sys.argv[1] == "fasttext":
                 vector = []
                 error_count = 0
@@ -165,8 +175,7 @@ embeddings_index = read_embeddings_from_file(embedding_path)
 embedding_dim = int(sys.argv[2])
 maxlen = 300
 max_words = 5000
-
-
+embedding_matrix = np.zeros((max_words, embedding_dim))
 
 if sys.argv[3] == "desample":
     x_data_val = read_from_file("data/validation/tweets_val")
@@ -176,8 +185,8 @@ if sys.argv[3] == "desample":
 elif sys.argv[3] == "none" or sys.argv[3] == "weights":
     x_data_val = read_from_file("data/validation/tweets_val")
     y_data_val = read_from_file("data/validation/labels_val")
-    train_data = read_from_file("data/train/tweets")
-    train_labels = read_from_file("data/train/labels")
+    train_data = read_from_file("data/train/tweets_none")
+    train_labels = read_from_file("data/train/labels_none")
 elif sys.argv[3] == "oversample":
     x_data_val = read_from_file("data/validation/tweets_val")
     y_data_val = read_from_file("data/validation/labels_val")
@@ -199,18 +208,37 @@ binarizer.fit(df['label'])
 labels = binarizer.classes_
 print(labels)
 num_classes = len(labels)
+
+
+
 tokenizer = Tokenizer(num_words=max_words, lower=True)
 tokenizer.fit_on_texts(df['tweet'])
 X_data = get_features(df['tweet'])
 word_index = tokenizer.word_index
 
-embedding_matrix = np.zeros((max_words, embedding_dim))
-for word, i in word_index.items():
-    embedding_vector = embeddings_index.get(word)
-    if i < max_words:
-        if embedding_vector is not None:
-            # Words not found in embedding index will be all-zeros.
-            embedding_matrix[i] = embedding_vector
+if char:
+    words = []
+    for tuple in word_index.items():
+        words.append(tuple[0])
+    c2v_model = chars2vec.load_model('eng_50')
+    char_embeddings = c2v_model.vectorize_words(words)
+
+    for word, i in word_index.items():
+        embedding_vector = embeddings_index.get(word)
+        if i < max_words:
+            if embedding_vector is not None:
+                # Words not found in embedding index will be all-zeros.
+                embedding_matrix[i] = embedding_vector
+else:
+    for word, i in word_index.items():
+        embedding_vector = embeddings_index.get(word)
+        if i < max_words:
+            if embedding_vector is not None:
+                # Words not found in embedding index will be all-zeros.
+                embedding_matrix[i] = embedding_vector
+
+
+
 binary_y = binarizer.transform(df['label'])
 binary_Y = []
 for label_arr in binary_y:
@@ -230,9 +258,10 @@ binarizer_val = LabelBinarizer()
 binarizer_val.fit(df_val['label'].astype(str))
 labels_val = binarizer_val.classes_
 
-tokenizer_val = Tokenizer(num_words=max_words, lower=True)
-tokenizer_val.fit_on_texts(df_val['tweet'])
+print(df_val['tweet'])
+tokenizer.fit_on_texts(df_val['tweet'])
 X_data_val = get_features(df_val['tweet'])
+
 binary_y_val = binarizer_val.transform(df_val['label'].astype(str))
 binary_Y_val = []
 for label_arr in binary_y_val:
@@ -240,6 +269,35 @@ for label_arr in binary_y_val:
         binary_Y_val.append(label)
 binary_Y_val = np.array(binary_Y_val)
 
+if char_2:
+    alphabet = "abcdefghijklmnopqrstuvwxyz0123456789,;.!?:'\"/\\|_@#$%^&*~`+-=<>()[]{}"
+    char_dict = {}
+    for i, char in enumerate(alphabet):
+        char_dict[char] = i + 1
+
+    # Use char_dict to replace the tk.word_index
+    tokenizer.word_index = char_dict.copy()
+    # Add 'UNK' to the vocabulary
+    tokenizer.word_index[tokenizer.oov_token] = max(char_dict.values()) + 1
+    # Convert string to index
+    train_sequences = tokenizer.texts_to_sequences(df['tweet'])
+    test_texts = tokenizer.texts_to_sequences(df_val['tweet'])
+
+    # Padding
+    x_train_data = pad_sequences(train_sequences, maxlen=1014, padding='post')
+    x_test_data = pad_sequences(test_texts, maxlen=1014, padding='post')
+
+    # Convert to numpy array
+    x_train_data = np.array(x_train_data, dtype='float32')
+    x_test_data = np.array(x_test_data, dtype='float32')
+
+    embedding_weights = []
+    embedding_weights.append(np.zeros(len(tokenizer.word_index)))
+    for char, i in tokenizer.word_index.items():
+        onehot = np.zeros(len(tokenizer.word_index))
+        onehot[i-1] = 1
+        embedding_weights.append(onehot)
+    embedding_weights = np.asarray(embedding_weights)
 
 if sys.argv[4] == "SMOTE":
     sm = SMOTE(random_state = 2)
@@ -276,37 +334,48 @@ if cv:
         print("Training Fold %i" % fold)
         print(len(x_train), len(x_test))
         filter_length = 32
+        if char:
+            chars = Sequential()
+            chars.add(Embedding(36745, 50, weights=[char_embeddings], input_length=maxlen))
+            # model.add(Embedding(36745, 50, weights=[char_embeddings], input_length=maxlen))
+            words = Sequential()
+            words.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=maxlen))
 
-        model = Sequential()
-        model.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=maxlen))
-        model.add(Conv1D(filter_length, 1, activation='relu'))
-        model.add(MaxPool1D(5))
-        model.add(Conv1D(filter_length, 1, activation='relu'))
-        model.add(Dropout(0.5))
-        model.add(Flatten())
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(2, activation='sigmoid'))
+            model = Sequential()
+            model.add(Concatenate([chars, words], axis=-1))
+            model.add(Conv1D(filter_length, 1, activation='relu'))
+            model.add(MaxPool1D(5))
+            model.add(Conv1D(filter_length, 1, activation='relu'))
+            model.add(Dropout(0.5))
+            model.add(Flatten())
+            model.add(Dense(32, activation='relu'))
+            model.add(Dense(2, activation='sigmoid'))
+        else:
+            if char_2:
+                input = Input(shape=(1014,))
+                embed = Embedding(len(tokenizer.word_index)+1, 69, weights=[embedding_weights], input_length=1014)(input)
+                conv1 = Conv1D(32, 1, activation='relu')(embed)
+                maxpool1 = MaxPool1D(5)(conv1)
+                conv2 = Conv1D(32, 1, activation='relu')(maxpool1)
+                dropout1 = Dropout(.5)(conv2)
+                flat = Flatten()(dropout1)
+                dense1 = Dense(32, activation='relu')(flat)
+                dense2 = Dense(2, activation='sigmoid')(dense1)
+                model = Model(outputs = dense2, inputs=input)
+                model.summary()
 
+            else:
+                model = Sequential()
+                model.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=1014))
+                model.add(Conv1D(filter_length, 1, activation='relu'))
+                model.add(MaxPool1D(5))
+                model.add(Conv1D(filter_length, 1, activation='relu'))
+                model.add(Dropout(0.5))
+                model.add(Flatten())
+                model.add(Dense(32, activation='relu'))
+                model.add(Dense(2, activation='sigmoid'))
 
-        model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-
-        # model.add(Embedding(max_words, 32))
-        # model.add(SimpleRNN(32, activation="relu"))
-        # model.add(Dense(8, activation='relu'))
-        # model.add(Dense(1))
-        # model.compile(optimizer='rmsprop', loss='mean_squared_error', metrics=['accuracy'])
-        """
-        history = model.fit(x_train, y_train, epochs=20, batch_size=512)
-        np_pred = np.array(model.predict(x_test))
-        np_pred[np_pred < 0.5] = 0
-        np_pred[np_pred > 0.5] = 1
-        np_pred = np_pred.astype(int)
-        np_true = np.array(y_test)
-        originalclass.extend(np_true)
-        predictedclass.extend(np_pred)
-        print(classification_report(np_true, np_pred,target_names=labels))
-        """
-
+            model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
         cv_model, loss, acc = fit_Model(model, x_train, y_train)
         y_pred, y_true = evaluate.predict(cv_model, x_test, y_test, labels)
         y_true = [str(lab) for lab in y_true]
@@ -331,6 +400,7 @@ if cv:
     print(confusion_matrix(y_true_val, y_pred_val))
     if write_results_file:
         output_to_file(np_true, np_pred, labels)
+
 """
 else:
     # train - test split
