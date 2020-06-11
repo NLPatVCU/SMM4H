@@ -7,24 +7,26 @@ class Preprocessing:
         self.file = file
         dataset = pd.read_csv(file, sep='\t')
         tweets = dataset['tweet'].tolist()
-        # tweets_no_html = self.remove_html(self.tweets)
-        # tweets_punctuation = self.remove_punctuation(tweets_no_html)
-        # tweets_no_hashtag = self.replace_hashtags(tweets_punctuation)
-        # tweets_no_links = self.replace_links(tweets_no_hashtag)
-        # tweets_no_usernames = self.replace_usernames(tweets_no_links)
-        # tweets = self.replace_emojis(tweets_no_usernames)
+        tweets_no_html = self.remove_html(tweets)
+        tweets_punctuation = self.remove_punctuation(tweets_no_html)
+        tweets_no_hashtag = self.replace_hashtags(tweets_punctuation)
+        tweets_no_links = self.replace_links(tweets_no_hashtag)
+        tweets_no_usernames = self.replace_usernames(tweets_no_links)
+        tweets = self.replace_emojis(tweets_no_usernames)
+        # tweets = self.remove_drug_names(tweets_no_emojis)
         print(tweets)
-
-        with open("./data/train/tweets_none", "w") as tweets_file:
+        print("That's a wrap")
+        with open("./data/test/tweets_none", "w") as tweets_file:
             for tweet in tweets:
                 tweets_file.write("\n" + tweet)
         tweets_file.close()
-
+        """
         self.labels = dataset['class'].tolist()
-        with open("./data/train/labels_none", "w") as labels_file:
+        with open("./data/test/labels_none", "w") as labels_file:
             for label in self.labels:
                 labels_file.write("%i\n" % label)
         labels_file.close()
+        """
 
     def remove_punctuation(self, tweets):
         tweets_clean = []
@@ -105,5 +107,24 @@ class Preprocessing:
             tweets_no_html.append(tweet_no_html)
         return tweets_no_html
 
+    def remove_drug_names(self, tweets):
+        tweets_no_drug_names = []
+        drugs = pd.read_csv("Products.txt", sep="\t", error_bad_lines=False)
+        drug_name_list = drugs['DrugName'].tolist()
+        my_list = []
+        for drugs in drug_name_list:
+            for drug in drugs.split(' '):
+                my_list.append(drug.strip().lower())
+        for tweet in tweets:
+            tweet_no_drugs = ""
+            for word in tweet.split(' '):
+                if word in my_list:
+                    tweet_no_drugs += " drug "
+                else:
+                    tweet_no_drugs += " " + word + " "
+            tweets_no_drug_names.append(tweet_no_drugs)
+        return tweets_no_drug_names
 
-o1 = Preprocessing("./data/train/task2_en_training.tsv")
+
+
+o1 = Preprocessing("./data/test/test.tsv")

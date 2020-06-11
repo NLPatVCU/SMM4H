@@ -31,10 +31,25 @@ def predict(model, x_test, y_test, encoder_classes):
 
     return y_pred, y_true
 
+def predict_test(model, x_test, encoder_classes):
+    """
+    Takes the predictions as input and returns the indices of the maximum values along an axis using numpy argmax function as true labels.
+    Then evaluates it against the trained model
+    :param model: trained model
+    :param x_test: test data
+    :param y_test: test true labels
+    :param encoder_classes:
+    :return: predicted and true labels
+    """
+    pred = model.predict(x_test)
+    y_pred_ind = np.argmax(pred, axis=1)
+    y_pred = [encoder_classes[i] for i in y_pred_ind]
+
+    return y_pred
 
 def evaluate_Model(y_pred, y_true, encoder_classes):
     """
-    Prints a classification report and the f1 scores 
+    Prints a classification report and the f1 scores
     :param y_pred:
     :param y_true:
     :param encoder_classes:

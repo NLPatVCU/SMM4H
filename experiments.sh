@@ -19,7 +19,7 @@
 # python sentence_cnn.py glove200 200 oversample none > oversample_times2_glove200.txt
 
 # SMOTE
-python sentence_cnn.py glove200 200 none SMOTE > SMOTE_glove200.txt
+# python sentence_cnn.py glove200 200 none SMOTE > SMOTE_glove200.txt
 
 # Class weights
 # python sentence_cnn.py glove200 200 weights none 1 5 > weights_1to5_glove200.txt
@@ -34,11 +34,25 @@ python sentence_cnn.py glove200 200 none SMOTE > SMOTE_glove200.txt
 # python sentence_cnn.py glove300 300 none none > glove300.txt
 # python sentence_cnn.py glove200twitter 200 none none > glove200twitter.txt
 # python sentence_cnn.py glove100twitter 100 none none > glove100twitter.txt
-python sentence_cnn.py glove50twitter 50 none none > glove50twitter.txt
-python sentence_cnn.py mimic200 200 none none > mimic200.txt
-python sentence_cnn.py mimic300 300 none none > mimic300.txt
-python sentence_cnn.py mimic400 400 none none > mimic300.txt
-python sentence_cnn.py wikivectors 200 none none > wikivectors200.txt
-python3 sentence_cnn.py fasttext 100 none none > fasttexttwitter.txt
-python3 sentence_cnn.py word2vectwitter 400 none none > word2vectwitter.txt
-python3 sentence_cnn.py wikipubmed 200 none none > wikipubmed.txt
+# python sentence_cnn.py glove50twitter 50 none none > glove50twitter.txt
+# python sentence_cnn.py mimic200 200 none none > mimic200.txt
+# python sentence_cnn.py mimic300 300 none none > mimic300.txt
+# python sentence_cnn.py mimic400 400 none none > mimic300.txt
+# python sentence_cnn.py wikivectors 200 none none > wikivectors200.txt
+# python3 sentence_cnn.py fasttext 100 none none > fasttexttwitter.txt
+# python3 sentence_cnn.py word2vectwitter 400 none none > word2vectwitter.txt
+# python3 sentence_cnn.py wikipubmed 200 none none > wikipubmed.txt
+
+python sentence_cnn.py glove100twitter 100 none none > glove100twitter_train_test.txt
+python sentence_cnn.py glove50twitter 50 none none > glove50twitter_train_test.txt
+
+python oversample.py 7
+python sentence_cnn.py glove100twitter 100 oversample none > oversample7_glove100twitter_train_test.txt
+python sentence_cnn.py glove50twitter 50 oversample none > oversample7_glove50twitter_train_test.txt
+
+python desample.py 4
+python sentence_cnn.py glove100twitter 100 desample none > desample4_glove100twitter_train_test.txt
+python sentence_cnn.py glove50twitter 50 desample none > desample7_glove50twitter_train_test.txt
+
+python sentence_cnn.py glove100twitter 100 weights none 1 10 > weights10_glove100twitter_train_test.txt
+python sentence_cnn.py glove50twitter 50 weights none 1 10 > weights10_glove50twitter_train_test.txt
