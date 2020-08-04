@@ -41,24 +41,4 @@ def oversample(labels, sentences, multiplier):
     return oversampled_sentences_shuffled, oversampled_labels_shuffled
 
 
-with open("./data/train/labels") as label_file_processed:
-    labels = [int(label.rstrip()) for label in label_file_processed]
-    label_file_processed.close()
-
-
-with open("./data/train/tweets") as tweets_file_processed:
-    tweets = [tweet.rstrip() for tweet in tweets_file_processed]
-    tweets_file_processed.close()
-print(len(tweets))
-
 tweets_oversampled, labels_oversampled = oversample(labels, tweets, int(sys.argv[1]))
-print(len(tweets_oversampled))
-with open("./data/train/tweets_oversample", "w") as tweets_file:
-    for sentence in tweets_oversampled:
-        tweets_file.write(sentence +"\n")
-    tweets_file.close()
-
-with open("./data/train/labels_oversample", "w") as labels_file:
-    for label in labels_oversampled:
-        labels_file.write("%i\n" % label)
-    labels_file.close()

@@ -1,6 +1,4 @@
 import sys
-sys.path.append("../Sam/RelEx/relex")
-
 import io
 import os
 import pandas as pd
