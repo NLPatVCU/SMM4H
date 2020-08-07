@@ -5,15 +5,16 @@ import pandas as pd
 import sys
 import keras
 import numpy as np
-sys.path.append(".")
-from model import Model
+from keras_wc_embd import get_dicts_generator, get_embedding_layer, get_embedding_weights_from_file
+import chars2vec
 
 class MakeEmbedding:
-    def __init__(self, word_index, embedding, dim, maxwords, error_handling=False):
+    def __init__(self, word_index, embedding, dim, maxwords, char=False, error_handling=False):
 
         self.word_index = word_index
         self.dim = dim
         self.maxwords = maxwords
+        self.char = char
 
         self.error_handling = error_handling
 
@@ -22,7 +23,11 @@ class MakeEmbedding:
         else:
             self.embedding = self.read_embeddings_from_file(embedding)
 
-        self.embedding_matrix = self.init_embedding()
+        if self.char:
+            self.char_embedding_matrix = self.char_cnn()
+            self.embedding_matrix = self.char_cnn()
+        else:
+            self.embedding_matrix = self.init_embedding()
 
     def read_embeddings_from_file(self, path):
         """
@@ -96,6 +101,23 @@ class MakeEmbedding:
         """
 
         embedding_matrix = np.zeros((self.maxwords, self.dim))
+
+        for word, i in self.word_index.items():
+            embedding_vector = self.embedding.get(word)
+            if i < self.maxwords:
+                if embedding_vector is not None:
+                    # Words not found in embedding index will be all-zeros.
+                    embedding_matrix[i] = embedding_vector
+
+        return embedding_matrix
+
+    def char_cnn(self):
+        embedding_matrix = np.zeros((self.maxwords, self.dim))
+        words = []
+        for tuple in self.word_index.items():
+            words.append(tuple[0])
+        c2v_model = chars2vec.load_model('eng_50')
+        char_embeddings = c2v_model.vectorize_words(words)
 
         for word, i in self.word_index.items():
             embedding_vector = self.embedding.get(word)

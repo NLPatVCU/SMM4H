@@ -140,7 +140,7 @@ class Model:
         """
         Transforms text data to feature_vectors that can be used in the ml model.
         tokenizer must be available.
-        
+
         :param text_series: text to create sequences from
         :param tokenizer: scikit learn tokenizer that has been fitted to text
         :return: padded sequences

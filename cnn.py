@@ -19,15 +19,13 @@ from keras.layers import *
 from keras.models import *
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
-from keras_wc_embd import get_dicts_generator, get_embedding_layer, get_embedding_weights_from_file
-import chars2vec
 import talos
 sys.path.append(".")
 from model import Model
 from embedding import MakeEmbedding
 
 class CNN:
-    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val=True, char=False, x_test=None):
+    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val=True, char=False, char_embedding_matrix=None, x_test=None):
         self.labels = labels
         self.dim = dim
         self.maxlen = maxlen
@@ -35,6 +33,7 @@ class CNN:
         self.filter_length = filter_length
         self.cross_val = cross_val
         self.char = char
+        self.char_embedding_matrix = char_embedding_matrix
 
         if x_test != None:
             self.x_test = X_test
@@ -49,7 +48,7 @@ class CNN:
         self.y_val = y_val
 
         if self.cross_val:
-            self.cv(self.x_train, self.y_train, self.embedding_matrix, self.x_val, self.y_val, self.labels)
+            self.cv(self.x_train, self.y_train, self.embedding_matrix, self.x_val, self.y_val, self.labels, self.char_embedding_matrix)
         else:
             self.train_test()
 
@@ -141,7 +140,7 @@ class CNN:
 
         return model, loss, acc
 
-    def cv(self, x_train_data, y_train_data, embedding_matrix, x_val, y_val, labels, X_data_test=None):
+    def cv(self, x_train_data, y_train_data, embedding_matrix, x_val, y_val, labels, char_embedding_matrix=None, X_data_test=None):
         """
         This function does the cross validation.
 
@@ -169,15 +168,14 @@ class CNN:
             print(len(x_train), len(x_test))
             filter_length = 64
 
-            if char:
+            if self.char:
                 chars = Sequential()
-                chars.add(Embedding(36745, 50, weights=[char_embeddings], input_length=maxlen))
-                # model.add(Embedding(36745, 50, weights=[char_embeddings], input_length=maxlen))
+                chars.add(Embedding(5000, 50, weights=[char_embedding_matrix], input_length=self.maxlen))
                 words = Sequential()
-                words.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=maxlen))
+                words.add(Embedding(self.maxwords, self.dim, weights=[embedding_matrix], input_length=self.maxlen))
 
                 model = Sequential()
-                model.add(Concatenate([chars, words], axis=-1))
+                model.add(Concatenate(axis=-1)([chars, words]))
                 model.add(Conv1D(filter_length, 1, activation='relu'))
                 model.add(MaxPool1D(5))
                 model.add(Conv1D(filter_length, 1, activation='relu'))
@@ -274,5 +272,5 @@ class CNN:
 
 
 model = Model("../data/train/tweets_none", "../data/train/labels_none", "../data/validation/tweets_val_none", "../data/validation/labels_val_none", 5000, 300)
-makembedding = MakeEmbedding(model.word_index, "../embeddings/twitter50.txt", 50, 5000)
-cnn = CNN(model.X_data, model.binary_Y, makembedding.embedding_matrix, model.X_data_val, model.binary_Y_val, model.labels, 50, 300, 5000, 32, char=True)
+makembedding = MakeEmbedding(model.word_index, "../embeddings/twitter50.txt", 50, 5000, char=True)
+cnn = CNN(model.X_data, model.binary_Y, makembedding.embedding_matrix, model.X_data_val, model.binary_Y_val, model.labels, 50, 300, 5000, 32, True, True, makembedding.char_embedding_matrix)
