@@ -1,0 +1,2 @@
+round_epochs,val_loss,val_accuracy,loss,accuracy,batch_size,dropout,epochs,filter,max_words,maxpool,stride
+20,0.8000159706294265,0.892277717590332,0.028440332308059275,0.9930459,128,10,20,16,5000,15,10
