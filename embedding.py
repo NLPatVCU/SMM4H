@@ -28,12 +28,16 @@ class MakeEmbedding:
         """
         Function to read external embedding files to build an index mapping words (as strings)
         to their vector representation (as number vectors).
+
+        :param path: path to emebedding
         :return dictionary: word vectors
         """
+        # rasies error if there's an invalid file path
         print("Reading external embedding file ......")
         if not os.path.isfile(path):
             raise FileNotFoundError("Not a valid file path")
 
+        # creates embedding index
         embeddings_index = {}
         with open(path, encoding='utf-8', errors='ignore') as f:
             next(f)
@@ -51,28 +55,32 @@ class MakeEmbedding:
         to their vector representation (as number vectors). Works exactly the same
         as def read_embeddings_from_file except has addional error handling for some
         embeddings that are tricky to read.
+
+        :param path: path to emebedding
         :return dictionary: word vectors
         """
+
+        # rasies error if there's an invalid file path
         print("Reading external embedding file ......")
         if not os.path.isfile(path):
             raise FileNotFoundError("Not a valid file path")
 
+        # creates embedding index
         embeddings_index = {}
         with open(path, encoding='utf-8', errors='ignore') as f:
             next(f)
             for line in f:
                 values = line.split()
                 word = values[0]
-                # for use with twitter word embedding
                 vector = []
-                error_count = 0
+                # this code processes error that occur when reading in an embedding
                 for val in values[1:]:
                     if val != "\n":
                         try:
                             val_float = float(val)
                             vector.append(val_float)
                         except ValueError:
-                            print("error")
+                            print("There's beem an error")
                 coefs = np.asarray(vector)
                 coefs = np.asarray(values[1:], dtype='float32')
                 embeddings_index[word] = coefs
@@ -81,7 +89,8 @@ class MakeEmbedding:
 
     def init_embedding(self):
         """
-        function that creates embedding matrix from word_index
+        function that creates embedding matrix from word_index.
+
         :param word_index: word index of X data
         :return: embedding matrix
         """
