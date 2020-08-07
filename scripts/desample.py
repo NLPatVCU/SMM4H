@@ -71,30 +71,4 @@ def desample(labels, sentences, ratio1, ratio2, ratio1_label, ratio2_label):
     # shuffles lists
     sentences_desampled_shuffled, labels_desampled_shuffled = shuffle(sentences_desampled, labels_desampled)
 
-    print(labels_desampled_shuffled.count(1))
-    print(labels_desampled_shuffled.count(0))
-    print("\n\n\n")
-
     return sentences_desampled_shuffled, labels_desampled_shuffled
-
-
-with open("./data/train/labels") as label_file_processed:
-    labels = [int(label.rstrip()) for label in label_file_processed]
-    label_file_processed.close()
-
-with open("./data/train/tweets") as tweets_file_processed:
-    tweets = [tweet.rstrip() for tweet in tweets_file_processed]
-    tweets_file_processed.close()
-
-
-tweets_desampled, labels_desampled = desample(labels, tweets, 1, float(sys.argv[1]), 1, 0)
-
-with open("./data/train/tweets_desample", "w") as tweets_file:
-    for sentence in tweets_desampled:
-        tweets_file.write(sentence +"\n")
-    tweets_file.close()
-
-with open("./data/train/labels_desample", "w") as labels_file:
-    for label in labels_desampled:
-        labels_file.write("%i\n" % label)
-    labels_file.close()

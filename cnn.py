@@ -50,13 +50,14 @@ class CNN:
         if self.cross_val:
             self.cv(self.x_train, self.y_train, self.embedding_matrix, self.x_val, self.y_val, self.labels)
         else:
-            print("Not finished yet.")
+            self.train_test()
 
 
     def predict(self, model, x_test, y_test, encoder_classes):
         """
         Takes the predictions as input and returns the indices of the maximum values along an axis using numpy argmax function as true labels.
         Then evaluates it against the trained model
+
         :param model: trained model
         :param x_test: test data
         :param y_test: test true labels
@@ -66,9 +67,7 @@ class CNN:
         pred = model.predict(x_test)
         y_true = y_test
         y_pred_ind = np.argmax(pred, axis=1)
-        # y_true_ind = np.argmax(y_test, axis=1)
         y_pred = [encoder_classes[i] for i in y_pred_ind]
-        # y_true = [encoder_classes[i] for i in y_true_ind]
         test_loss, test_acc = model.evaluate(x_test, y_test)
 
         print("Accuracy :", test_acc)
@@ -79,6 +78,7 @@ class CNN:
     def cv_evaluation_fold(self, y_pred, y_true, labels):
         """
         Evaluation metrics for emicroach fold
+
         :param y_pred: predicted labels
         :param y_true: true labels
         :param labels: list of the classes
@@ -108,6 +108,7 @@ class CNN:
     def prediction_to_label(self, prediction):
         """
         Turns the prediction into a label.
+
         :param prediction: prediction for X data
         :return: labels in dictionary form
         """
@@ -117,6 +118,7 @@ class CNN:
     def fit_Model(self, model, x_train, y_train):
         """
         fit the defined model to train on the data
+
         :param model: trained model
         :param x_train: training data
         :param y_train: training labels
@@ -139,6 +141,17 @@ class CNN:
         return model, loss, acc
 
     def cv(self, x_train_data, y_train_data, embedding_matrix, x_val, y_val, labels, X_data_test=None):
+        """
+        This function does the cross validation.
+
+        :param x_train_data: processed X train data.
+        :param y_train_data: processed Y train data.
+        :param embedding_matrix: embedding perpared for embedding layer.
+        :param x_val: processed X validation data.
+        :param y_val: processed Y validation data.
+        :param labels: list of labels.
+        param X_data_test: processed test data.
+        """
         skf = StratifiedKFold(n_splits=5, shuffle=True)
         skf.get_n_splits(x_train_data, y_train_data)
 
@@ -198,6 +211,46 @@ class CNN:
             d = {'tweet_id':tweets_id, 'tweets':tweets, 'Class': pred_labels}
             df = pd.DataFrame(data=d)
             df.to_csv('weights1to10_glovetwitter50_CV_TEST.tsv', sep='\t')
+
+    def train_test(self):
+        # train - test split
+        filter_length = 32
+        model = Sequential()
+        model.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=maxlen))
+        model.add(Conv1D(filter_length, 1, activation='relu'))
+        model.add(MaxPool1D(5))
+        model.add(Conv1D(filter_length, 1, activation='relu'))
+        model.add(Dropout(0.5))
+        model.add(Flatten())
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(2, activation='sigmoid'))
+        model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        model.summary()
+
+        history = model.fit(x_train_data, y_train_data,
+                            epochs=20,
+                            batch_size=512)
+
+        y_pred_val, y_true_val = evaluate.predict(model, x_val, y_val, labels)
+        y_true_val = [str(lab) for lab in y_true_val]
+        # y_pred = np.array(model.predict(x_val))
+
+        print(classification_report(y_true_val, y_pred_val, target_names=labels))
+        print(len(X_data_test))
+        pred = model.predict(X_data_test)
+        y_pred_ind = np.argmax(pred, axis=1)
+        pred_labels = [labels[i] for i in y_pred_ind]
+        dataset = pd.read_csv("data/test/test.tsv", sep='\t')
+        tweets_id = dataset['tweet_id'].tolist()
+        tweets = dataset['tweet'].tolist()
+        print(len(tweets_id))
+        print(len(tweets))
+        print(len(pred_labels))
+        d = {'tweet_id':tweets_id, 'tweets':tweets, 'Class': pred_labels}
+        df = pd.DataFrame(data=d)
+        df.to_csv('weights1to10_glovetwitter50_traintest_TEST.tsv', sep='\t')
+
+
 
 model = Model("../data/train/tweets_none", "../data/train/labels_none", "../data/validation/tweets_val_none", "../data/validation/labels_val_none", 5000, 300)
 makembedding = MakeEmbedding(model.word_index, "../embeddings/twitter50.txt", 50, 5000)

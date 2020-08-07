@@ -13,20 +13,6 @@ class Preprocessing:
         tweets_no_links = self.replace_links(tweets_no_hashtag)
         tweets_no_usernames = self.replace_usernames(tweets_no_links)
         tweets = self.replace_emojis(tweets_no_usernames)
-        # tweets = self.remove_drug_names(tweets_no_emojis)
-        print(tweets)
-        print("That's a wrap")
-        with open("./data/test/tweets_none", "w") as tweets_file:
-            for tweet in tweets:
-                tweets_file.write("\n" + tweet)
-        tweets_file.close()
-        """
-        self.labels = dataset['class'].tolist()
-        with open("./data/test/labels_none", "w") as labels_file:
-            for label in self.labels:
-                labels_file.write("%i\n" % label)
-        labels_file.close()
-        """
 
     def remove_punctuation(self, tweets):
         tweets_clean = []
@@ -124,7 +110,3 @@ class Preprocessing:
                     tweet_no_drugs += " " + word + " "
             tweets_no_drug_names.append(tweet_no_drugs)
         return tweets_no_drug_names
-
-
-
-o1 = Preprocessing("./data/test/test.tsv")

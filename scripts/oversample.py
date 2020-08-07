@@ -32,13 +32,5 @@ def oversample(labels, sentences, multiplier):
     oversampled_sentences = new_sentences_1 + sentences_shuffled_0
 
     oversampled_labels_shuffled, oversampled_sentences_shuffled = shuffle(oversampled_labels, oversampled_sentences)
-    print(labels.count(1))
-    print(oversampled_labels_shuffled.count(1))
-
-    print(labels.count(0))
-    print(oversampled_labels_shuffled.count(0))
 
     return oversampled_sentences_shuffled, oversampled_labels_shuffled
-
-
-tweets_oversampled, labels_oversampled = oversample(labels, tweets, int(sys.argv[1]))
