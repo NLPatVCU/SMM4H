@@ -27,13 +27,14 @@ from model import Model
 from embedding import MakeEmbedding
 
 class CNN:
-    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val=True, x_test=None):
+    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val=True, char=False, x_test=None):
         self.labels = labels
         self.dim = dim
         self.maxlen = maxlen
         self.maxwords = maxwords
         self.filter_length = filter_length
         self.cross_val = cross_val
+        self.char = char
 
         if x_test != None:
             self.x_test = X_test
@@ -168,16 +169,36 @@ class CNN:
             print(len(x_train), len(x_test))
             filter_length = 64
 
-            model = Sequential()
-            model.add(Embedding(self.maxwords, self.dim, weights=[embedding_matrix], input_length=self.maxlen))
-            model.add(Conv1D(self.filter_length, 1, activation='relu'))
-            model.add(MaxPool1D(5))
-            model.add(Conv1D(self.filter_length, 1, activation='relu'))
-            model.add(Dropout(0.5))
-            model.add(Flatten())
-            model.add(Dense(32, activation='relu'))
-            model.add(Dense(2, activation='sigmoid'))
-            model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+            if char:
+                chars = Sequential()
+                chars.add(Embedding(36745, 50, weights=[char_embeddings], input_length=maxlen))
+                # model.add(Embedding(36745, 50, weights=[char_embeddings], input_length=maxlen))
+                words = Sequential()
+                words.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=maxlen))
+
+                model = Sequential()
+                model.add(Concatenate([chars, words], axis=-1))
+                model.add(Conv1D(filter_length, 1, activation='relu'))
+                model.add(MaxPool1D(5))
+                model.add(Conv1D(filter_length, 1, activation='relu'))
+                model.add(Dropout(0.5))
+                model.add(Flatten())
+                model.add(Dense(32, activation='relu'))
+                model.add(Dense(2, activation='sigmoid'))
+                model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+            else:
+
+                model = Sequential()
+                model.add(Embedding(self.maxwords, self.dim, weights=[embedding_matrix], input_length=self.maxlen))
+                model.add(Conv1D(self.filter_length, 1, activation='relu'))
+                model.add(MaxPool1D(5))
+                model.add(Conv1D(self.filter_length, 1, activation='relu'))
+                model.add(Dropout(0.5))
+                model.add(Flatten())
+                model.add(Dense(32, activation='relu'))
+                model.add(Dense(2, activation='sigmoid'))
+                model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
             cv_model, loss, acc = self.fit_Model(model, x_train, y_train)
             y_pred, y_true = self.predict(cv_model, x_test, y_test, labels)
@@ -254,4 +275,4 @@ class CNN:
 
 model = Model("../data/train/tweets_none", "../data/train/labels_none", "../data/validation/tweets_val_none", "../data/validation/labels_val_none", 5000, 300)
 makembedding = MakeEmbedding(model.word_index, "../embeddings/twitter50.txt", 50, 5000)
-cnn = CNN(model.X_data, model.binary_Y, makembedding.embedding_matrix, model.X_data_val, model.binary_Y_val, model.labels, 50, 300, 5000, 32)
+cnn = CNN(model.X_data, model.binary_Y, makembedding.embedding_matrix, model.X_data_val, model.binary_Y_val, model.labels, 50, 300, 5000, 32, char=True)
