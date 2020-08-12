@@ -15,6 +15,12 @@ class Preprocessing:
         tweets = self.replace_emojis(tweets_no_usernames)
 
     def remove_punctuation(self, tweets):
+        """
+        Removes double quotes
+
+        :param tweets: list of tweets
+        :return: tweets in list with double quotes removed
+        """
         tweets_clean = []
         for tweet in tweets:
             tweet = tweet.replace('“', '')
@@ -24,6 +30,12 @@ class Preprocessing:
 
 
     def replace_emojis(self, tweets):
+        """
+        Remove emojis and replace them with word that represents  them
+
+        :param tweets: list of tweets
+        :return: tweets in list with emojis replaced
+        """
         tweets_no_emojis = []
         for tweet in tweets:
             tweet_demoji = emoji.demojize(tweet, delimiters=(' ', ' ')).replace('  ', ' ')
@@ -40,6 +52,12 @@ class Preprocessing:
         return tweets_no_emojis
 
     def replace_usernames(self, tweets ):
+        """
+        Replaces usernames with word username
+
+        :param tweets: list of tweets
+        :return: tweets in list with usernames replaced
+        """
         tweets_no_usernames = []
         for tweet in tweets:
             tweet_no_users = ""

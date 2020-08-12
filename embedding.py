@@ -5,11 +5,18 @@ import pandas as pd
 import sys
 import keras
 import numpy as np
-sys.path.append(".")
-from model import Model
 
 class MakeEmbedding:
     def __init__(self, word_index, embedding, dim, maxwords, error_handling=False):
+        """
+        Creates embedding for CNN
+
+        :param word_index: word_index from model file
+        :param embedding: path to embedding file
+        :param dim: dimension of the embedding
+        :param maxwords: maximum number of words to use
+        :param error_handling: flag for embedding read function that handles errors
+        """
 
         self.word_index = word_index
         self.dim = dim

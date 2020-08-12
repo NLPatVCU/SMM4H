@@ -30,6 +30,17 @@ def read_from_file(file):
 
 class Model:
     def __init__(self, Xdata_train, Ydata_train, Xdata_val, Ydata_val, maxwords, maxlen, data_test=None):
+        """
+        Prepares data for CNN
+
+        :param Xdata_train: preprocessed X train data
+        :param Ydata_train: preprocessed Y train data
+        :param Xdata_val: preprocessed X validation data
+        :param Ydata_val: preprocessed Y validation data
+        :param maxwords: maximum words to use
+        :param maxlen: maximum input length for tweet
+        :param data_test: preprocessed test data:
+        """
 
         self.maxwords = maxwords
         self.maxlen = maxlen
@@ -140,7 +151,7 @@ class Model:
         """
         Transforms text data to feature_vectors that can be used in the ml model.
         tokenizer must be available.
-        
+
         :param text_series: text to create sequences from
         :param tokenizer: scikit learn tokenizer that has been fitted to text
         :return: padded sequences

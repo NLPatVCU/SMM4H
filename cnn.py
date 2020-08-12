@@ -28,6 +28,22 @@ from embedding import MakeEmbedding
 
 class CNN:
     def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val=True, x_test=None):
+        """
+        Runs CNN.
+
+        :param x_train: X train data pre-processed
+        :param y_train: Y train data pre-processed
+        :param embedding_matrix: embedding ready for embedding layer
+        :param x_val: X validation data pre-processed
+        :param y_val: Y validation data pre-processed  
+        :param labels: list of unique labels
+        :param dim: dimension of word embedding
+        :param maxlen: maximum input length of a tweet
+        :param maxwords: maximum words
+        :param filter_length: length of filter
+        :param cross_val: flag for cross validation
+        :param x_test: test data
+        """
         self.labels = labels
         self.dim = dim
         self.maxlen = maxlen
@@ -48,7 +64,7 @@ class CNN:
         self.y_val = y_val
 
         if self.cross_val:
-            self.cv(self.x_train, self.y_train, self.embedding_matrix, self.x_val, self.y_val, self.labels)
+            self.cv()
         else:
             self.train_test()
 
@@ -153,23 +169,23 @@ class CNN:
         param X_data_test: processed test data.
         """
         skf = StratifiedKFold(n_splits=5, shuffle=True)
-        skf.get_n_splits(x_train_data, y_train_data)
+        skf.get_n_splits(self.x_train, self.y_train)
 
         fold = 1
         originalclass = []
         predictedclass = []
 
 
-        for train_index, test_index in skf.split(x_train_data, y_train_data):
+        for train_index, test_index in skf.split(self.x_train, self.y_train):
 
-            x_train, x_test = x_train_data[train_index], x_train_data[test_index]
-            y_train, y_test = y_train_data[train_index], y_train_data[test_index]
+            x_train, x_test = self.x_train[train_index], self.x_train[test_index]
+            y_train, y_test = self.y_train[train_index], self.y_train[test_index]
             print("Training Fold %i" % fold)
             print(len(x_train), len(x_test))
             filter_length = 64
 
             model = Sequential()
-            model.add(Embedding(self.maxwords, self.dim, weights=[embedding_matrix], input_length=self.maxlen))
+            model.add(Embedding(self.maxwords, self.dim, weights=[self.embedding_matrix], input_length=self.maxlen))
             model.add(Conv1D(self.filter_length, 1, activation='relu'))
             model.add(MaxPool1D(5))
             model.add(Conv1D(self.filter_length, 1, activation='relu'))
@@ -180,22 +196,22 @@ class CNN:
             model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
             cv_model, loss, acc = self.fit_Model(model, x_train, y_train)
-            y_pred, y_true = self.predict(cv_model, x_test, y_test, labels)
+            y_pred, y_true = self.predict(cv_model, x_test, y_test, self.labels)
             y_true = [str(lab) for lab in y_true]
             originalclass.extend(y_true)
             predictedclass.extend(y_pred)
 
             print("--------------------------- Results ------------------------------------")
-            print(classification_report(y_true, y_pred, labels=labels))
+            print(classification_report(y_true, y_pred, labels=self.labels))
             print(confusion_matrix(y_true, y_pred))
-            fold_statistics = self.cv_evaluation_fold(y_pred, y_true, labels=labels)
+            fold_statistics = self.cv_evaluation_fold(y_pred, y_true, labels=self.labels)
 
             fold += 1
 
-        y_pred_val, y_true_val = self.predict(cv_model, x_val, y_val, labels)
+        y_pred_val, y_true_val = self.predict(cv_model, self.x_val, self.y_val, self.labels)
         y_true_val = [str(lab) for lab in y_true_val]
         print("--------------------------- Results ------------------------------------")
-        print(classification_report(y_true_val, y_pred_val, labels=labels))
+        print(classification_report(y_true_val, y_pred_val, labels=self.labels))
         print(confusion_matrix(y_true_val, y_pred_val))
         if self.test:
             print(len(X_data_test))
@@ -231,11 +247,11 @@ class CNN:
                             epochs=20,
                             batch_size=512)
 
-        y_pred_val, y_true_val = evaluate.predict(model, x_val, y_val, labels)
+        y_pred_val, y_true_val = evaluate.predict(model, self.x_val, self.y_val, self.labels)
         y_true_val = [str(lab) for lab in y_true_val]
         # y_pred = np.array(model.predict(x_val))
 
-        print(classification_report(y_true_val, y_pred_val, target_names=labels))
+        print(classification_report(y_true_val, y_pred_val, target_names=self.labels))
         print(len(X_data_test))
         pred = model.predict(X_data_test)
         y_pred_ind = np.argmax(pred, axis=1)
@@ -249,9 +265,3 @@ class CNN:
         d = {'tweet_id':tweets_id, 'tweets':tweets, 'Class': pred_labels}
         df = pd.DataFrame(data=d)
         df.to_csv('weights1to10_glovetwitter50_traintest_TEST.tsv', sep='\t')
-
-
-
-model = Model("../data/train/tweets_none", "../data/train/labels_none", "../data/validation/tweets_val_none", "../data/validation/labels_val_none", 5000, 300)
-makembedding = MakeEmbedding(model.word_index, "../embeddings/twitter50.txt", 50, 5000)
-cnn = CNN(model.X_data, model.binary_Y, makembedding.embedding_matrix, model.X_data_val, model.binary_Y_val, model.labels, 50, 300, 5000, 32)
