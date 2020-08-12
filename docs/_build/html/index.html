@@ -38,7 +38,26 @@
 <dl class="py class">
 <dt id="smm4h.cnn.CNN">
 <em class="property">class </em><code class="sig-prename descclassname">smm4h.cnn.</code><code class="sig-name descname">CNN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_train</span></em>, <em class="sig-param"><span class="n">y_train</span></em>, <em class="sig-param"><span class="n">embedding_matrix</span></em>, <em class="sig-param"><span class="n">x_val</span></em>, <em class="sig-param"><span class="n">y_val</span></em>, <em class="sig-param"><span class="n">labels</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">maxlen</span></em>, <em class="sig-param"><span class="n">maxwords</span></em>, <em class="sig-param"><span class="n">filter_length</span></em>, <em class="sig-param"><span class="n">cross_val</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">x_test</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Runs CNN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_train</strong> – X train data pre-processed</p></li>
+<li><p><strong>y_train</strong> – Y train data pre-processed</p></li>
+<li><p><strong>embedding_matrix</strong> – embedding ready for embedding layer</p></li>
+<li><p><strong>x_val</strong> – X validation data pre-processed</p></li>
+<li><p><strong>y_val</strong> – Y validation data pre-processed</p></li>
+<li><p><strong>labels</strong> – list of unique labels</p></li>
+<li><p><strong>dim</strong> – dimension of word embedding</p></li>
+<li><p><strong>maxlen</strong> – maximum input length of a tweet</p></li>
+<li><p><strong>maxwords</strong> – maximum words</p></li>
+<li><p><strong>filter_length</strong> – length of filter</p></li>
+<li><p><strong>cross_val</strong> – flag for cross validation</p></li>
+<li><p><strong>x_test</strong> – test data</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
 <dt id="smm4h.cnn.CNN.cv">
 <code class="sig-name descname">cv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_train_data</span></em>, <em class="sig-param"><span class="n">y_train_data</span></em>, <em class="sig-param"><span class="n">embedding_matrix</span></em>, <em class="sig-param"><span class="n">x_val</span></em>, <em class="sig-param"><span class="n">y_val</span></em>, <em class="sig-param"><span class="n">labels</span></em>, <em class="sig-param"><span class="n">X_data_test</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN.cv" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function does the cross validation.</p>
@@ -135,7 +154,21 @@ Then evaluates it against the trained model</p>
 <dl class="py class">
 <dt id="smm4h.model.Model">
 <em class="property">class </em><code class="sig-prename descclassname">smm4h.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Xdata_train</span></em>, <em class="sig-param"><span class="n">Ydata_train</span></em>, <em class="sig-param"><span class="n">Xdata_val</span></em>, <em class="sig-param"><span class="n">Ydata_val</span></em>, <em class="sig-param"><span class="n">maxwords</span></em>, <em class="sig-param"><span class="n">maxlen</span></em>, <em class="sig-param"><span class="n">data_test</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.model.Model" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Prepares data for CNN</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Xdata_train</strong> – preprocessed X train data</p></li>
+<li><p><strong>Ydata_train</strong> – preprocessed Y train data</p></li>
+<li><p><strong>Xdata_val</strong> – preprocessed X validation data</p></li>
+<li><p><strong>Ydata_val</strong> – preprocessed Y validation data</p></li>
+<li><p><strong>maxwords</strong> – maximum words to use</p></li>
+<li><p><strong>maxlen</strong> – maximum input length for tweet</p></li>
+<li><p><strong>data_test</strong> – preprocessed test data</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
 <dt id="smm4h.model.Model.get_features">
 <code class="sig-name descname">get_features</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text_series</span></em>, <em class="sig-param"><span class="n">tokenizer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.model.Model.get_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transforms text data to feature_vectors that can be used in the ml model.
@@ -209,7 +242,19 @@ tokenizer must be available.</p>
 <dl class="py class">
 <dt id="smm4h.embedding.MakeEmbedding">
 <em class="property">class </em><code class="sig-prename descclassname">smm4h.embedding.</code><code class="sig-name descname">MakeEmbedding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">word_index</span></em>, <em class="sig-param"><span class="n">embedding</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">maxwords</span></em>, <em class="sig-param"><span class="n">error_handling</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.embedding.MakeEmbedding" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<dd><p>Creates embedding for CNN</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>word_index</strong> – word_index from model file</p></li>
+<li><p><strong>embedding</strong> – path to embedding file</p></li>
+<li><p><strong>dim</strong> – dimension of the embedding</p></li>
+<li><p><strong>maxwords</strong> – maximum number of words to use</p></li>
+<li><p><strong>error_handling</strong> – flag for embedding read function that handles errors</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
 <dt id="smm4h.embedding.MakeEmbedding.init_embedding">
 <code class="sig-name descname">init_embedding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.embedding.MakeEmbedding.init_embedding" title="Permalink to this definition">¶</a></dt>
 <dd><p>function that creates embedding matrix from word_index.</p>
