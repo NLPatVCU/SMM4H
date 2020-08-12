@@ -6,7 +6,7 @@ To install clone this repository using Git:
 ``` 
 git clone https://github.com/NLPatVCU/SMM4H.git 
 ```
-Then, create a virtual enviorment. 
+Then, create a virtual enviorment. You should use Python 3.6. 
 ``` 
 python3 -m venv env
 source env/bin/activate 
