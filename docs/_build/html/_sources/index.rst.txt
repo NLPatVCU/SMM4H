@@ -1,5 +1,9 @@
 SMM4H's documentation!
 =================================
+
+.. toctree::
+   :maxdepth: 2
+
 CNN
 #################################
 .. autoclass:: smm4h.cnn.CNN
@@ -20,6 +24,7 @@ Preprocessing
 .. autoclass:: smm4h.preprocessing.Preprocessing
     :members:
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+Unbalanced
+#################################
+.. autoclass:: smm4h.unbalanced.Unbalanced
+    :members:
