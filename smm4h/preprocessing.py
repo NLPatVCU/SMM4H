@@ -12,7 +12,7 @@ class Preprocessing:
         tweets_no_hashtag = self.replace_hashtags(tweets_punctuation)
         tweets_no_links = self.replace_links(tweets_no_hashtag)
         tweets_no_usernames = self.replace_usernames(tweets_no_links)
-        tweets = self.replace_emojis(tweets_no_usernames)
+        self.tweets = self.replace_emojis(tweets_no_usernames)
 
     def remove_punctuation(self, tweets):
         """

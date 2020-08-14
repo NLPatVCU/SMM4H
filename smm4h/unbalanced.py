@@ -5,49 +5,33 @@ import sys
 import pandas
 import numpy as np
 
-def read_from_file(file):
-    """
-    Reads external files and insert the content to a list. It also removes whitespace
-    characters like `\n` at the end of each lines.
-
-    :param file: name of the input file.
-    :return : content of the file in list format
-    """
-    if not os.path.isfile(file):
-        raise FileNotFoundError("Not a valid file path")
-
-    with open(file) as f:
-        content = f.readlines()
-    content = [x.strip() for x in content]
-
-    return content
 
 class Unbalanced:
     def __init__(self, X, Y, unbalanced, multiplier=None, ratio1=None, ratio2=None, ratio1_label=None, ratio2_label=None):
         """
         Oversamples or desamples data.
 
-        :param X: path to X data
-        :param Y: path to Y data
+        :param X:  X data
+        :param Y: Y data
         :param unbalanced: flag for desample, oversample or none. Four options: desample, oversample, weights, none.
         :param multiplier: number to duplicate by for oversampling. 1 more than duplications desired.
         :param ratio1: ratio desired for first label
         :param ratio2: ratio desired for second label
         :param ratio1_label: first label
         :param ratio2_label: second label
-        
+
         """
         self.unbalanced = unbalanced
 
         if self.unbalanced == "oversample":
             self.multiplier = multiplier
-            self.X, self.Y = oversample(read_from_file(X), read_from_file(Y))
+            self.X, self.Y = self.oversample(X, Y)
         elif self.unbalanced == "desample":
             self.ratio1 = ratio1
             self.ratio2 = ratio2
             self.ratio1_label = ratio1_label
             self.ratio2_label = ratio2_label
-            self.X, self.Y = desample(read_from_file(X), read_from_file(Y))
+            self.X, self.Y = self.desample(X, Y)
         else:
             self.X = X
             self.Y = Y

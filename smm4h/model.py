@@ -49,12 +49,12 @@ class Model:
         self.maxlen = maxlen
 
         # process train & validation data
-        self.X_data, self.binary_Y, self.word_index, self.labels = self.process_train(read_from_file(Xdata_train), read_from_file(Ydata_train))
-        self.X_data_val, self.binary_Y_val = self.process_val(read_from_file(Xdata_val), read_from_file(Ydata_val))
+        self.X_data, self.binary_Y, self.word_index, self.labels = self.process_train(Xdata_train, Ydata_train)
+        self.X_data_val, self.binary_Y_val = self.process_val(Xdata_val, Ydata_val)
 
         # process test data if it exists
         if data_test != None:
-            self.X_data_test = self.process_test(read_from_file(data_test))
+            self.X_data_test = self.process_test(data_test)
 
     def process_train(self, Xdata_train, Ydata_train):
         """

@@ -41,6 +41,7 @@ class CNN:
         :param cross_val: flag for cross validation
         :param x_test: test data
         """
+
         self.labels = labels
         self.dim = dim
         self.maxlen = maxlen
@@ -153,7 +154,7 @@ class CNN:
 
         return model, loss, acc
 
-    def cv(self, x_train_data, y_train_data, embedding_matrix, x_val, y_val, labels, X_data_test=None):
+    def cv(self):
         """
         This function does the cross validation.
 
@@ -226,13 +227,11 @@ class CNN:
             df.to_csv('weights1to10_glovetwitter50_CV_TEST.tsv', sep='\t')
 
     def train_test(self):
-        # train - test split
-        filter_length = 32
         model = Sequential()
-        model.add(Embedding(max_words, embedding_dim, weights=[embedding_matrix], input_length=maxlen))
-        model.add(Conv1D(filter_length, 1, activation='relu'))
+        model.add(Embedding(self.maxwords, self.dim, weights=[self.embedding_matrix], input_length=self.maxlen))
+        model.add(Conv1D(self.filter_length, 1, activation='relu'))
         model.add(MaxPool1D(5))
-        model.add(Conv1D(filter_length, 1, activation='relu'))
+        model.add(Conv1D(self.filter_length, 1, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Flatten())
         model.add(Dense(32, activation='relu'))
@@ -240,15 +239,17 @@ class CNN:
         model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
         model.summary()
 
-        history = model.fit(x_train_data, y_train_data,
+        history = model.fit(self.x_train, self.y_train,
                             epochs=20,
                             batch_size=512)
 
-        y_pred_val, y_true_val = evaluate.predict(model, self.x_val, self.y_val, self.labels)
+        y_pred_val, y_true_val = self.predict(model, self.x_val, self.y_val, self.labels)
         y_true_val = [str(lab) for lab in y_true_val]
         # y_pred = np.array(model.predict(x_val))
 
         print(classification_report(y_true_val, y_pred_val, target_names=self.labels))
+        print(confusion_matrix(y_true_val, y_pred_val))
+        """
         print(len(X_data_test))
         pred = model.predict(X_data_test)
         y_pred_ind = np.argmax(pred, axis=1)
@@ -262,3 +263,4 @@ class CNN:
         d = {'tweet_id':tweets_id, 'tweets':tweets, 'Class': pred_labels}
         df = pd.DataFrame(data=d)
         df.to_csv('weights1to10_glovetwitter50_traintest_TEST.tsv', sep='\t')
+        """
