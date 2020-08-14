@@ -24,7 +24,7 @@ import chars2vec
 import talos
 
 class CNN:
-    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val=True, x_test=None):
+    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val, test, x_test):
         """
         Runs CNN.
 
@@ -49,8 +49,8 @@ class CNN:
         self.filter_length = filter_length
         self.cross_val = cross_val
 
-        if x_test != None:
-            self.x_test = X_test
+        if test:
+            self.x_test = x_test
             self.test = True
         else:
             self.test = False
@@ -154,6 +154,19 @@ class CNN:
 
         return model, loss, acc
 
+    def test_data(self, model):
+        pred = model.predict(self.x_test)
+        y_pred_ind = np.argmax(pred, axis=1)
+        pred_labels = [self.labels[i] for i in y_pred_ind]
+
+        dataset = pd.read_csv("../../data/test/test.tsv", sep='\t')
+        tweets_id = dataset['tweet_id'].tolist()
+        tweets = dataset['tweet'].tolist()
+        d = {'tweet_id':tweets_id, 'tweets':tweets, 'Class': pred_labels}
+
+        df = pd.DataFrame(data=d)
+        df.to_csv("../../data/test/test_new.tsv", sep='\t')
+
     def cv(self):
         """
         This function does the cross validation.
@@ -189,7 +202,7 @@ class CNN:
             model.add(Conv1D(self.filter_length, 1, activation='relu'))
             model.add(Dropout(0.5))
             model.add(Flatten())
-            model.add(Dense(32, activation='relu'))
+            model.add(Dense(self.filter_length, activation='relu'))
             model.add(Dense(2, activation='sigmoid'))
             model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
@@ -212,19 +225,8 @@ class CNN:
         print(classification_report(y_true_val, y_pred_val, labels=self.labels))
         print(confusion_matrix(y_true_val, y_pred_val))
         if self.test:
-            print(len(X_data_test))
-            pred = model.predict(X_data_test)
-            y_pred_ind = np.argmax(pred, axis=1)
-            pred_labels = [labels[i] for i in y_pred_ind]
-            dataset = pd.read_csv("data/test/test.tsv", sep='\t')
-            tweets_id = dataset['tweet_id'].tolist()
-            tweets = dataset['tweet'].tolist()
-            print(len(tweets_id))
-            print(len(tweets))
-            print(len(pred_labels))
-            d = {'tweet_id':tweets_id, 'tweets':tweets, 'Class': pred_labels}
-            df = pd.DataFrame(data=d)
-            df.to_csv('weights1to10_glovetwitter50_CV_TEST.tsv', sep='\t')
+            self.test_data()
+
 
     def train_test(self):
         model = Sequential()
@@ -234,7 +236,7 @@ class CNN:
         model.add(Conv1D(self.filter_length, 1, activation='relu'))
         model.add(Dropout(0.5))
         model.add(Flatten())
-        model.add(Dense(32, activation='relu'))
+        model.add(Dense(self.filter_length, activation='relu'))
         model.add(Dense(2, activation='sigmoid'))
         model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
         model.summary()
@@ -249,18 +251,6 @@ class CNN:
 
         print(classification_report(y_true_val, y_pred_val, target_names=self.labels))
         print(confusion_matrix(y_true_val, y_pred_val))
-        """
-        print(len(X_data_test))
-        pred = model.predict(X_data_test)
-        y_pred_ind = np.argmax(pred, axis=1)
-        pred_labels = [labels[i] for i in y_pred_ind]
-        dataset = pd.read_csv("data/test/test.tsv", sep='\t')
-        tweets_id = dataset['tweet_id'].tolist()
-        tweets = dataset['tweet'].tolist()
-        print(len(tweets_id))
-        print(len(tweets))
-        print(len(pred_labels))
-        d = {'tweet_id':tweets_id, 'tweets':tweets, 'Class': pred_labels}
-        df = pd.DataFrame(data=d)
-        df.to_csv('weights1to10_glovetwitter50_traintest_TEST.tsv', sep='\t')
-        """
+
+        if self.test:
+            self.test_data(model)

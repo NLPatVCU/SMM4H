@@ -31,7 +31,7 @@ def read_from_file(file):
     return content
 
 class Model:
-    def __init__(self, Xdata_train, Ydata_train, Xdata_val, Ydata_val, maxwords, maxlen, data_test=None):
+    def __init__(self, Xdata_train, Ydata_train, Xdata_val, Ydata_val, maxwords, maxlen, test=False, data_test=None):
         """
         Prepares data for CNN
 
@@ -53,7 +53,7 @@ class Model:
         self.X_data_val, self.binary_Y_val = self.process_val(Xdata_val, Ydata_val)
 
         # process test data if it exists
-        if data_test != None:
+        if test:
             self.X_data_test = self.process_test(data_test)
 
     def process_train(self, Xdata_train, Ydata_train):
