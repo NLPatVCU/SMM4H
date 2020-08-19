@@ -49,8 +49,8 @@ class Model:
         self.maxlen = maxlen
 
         # process train & validation data
-        self.X_data, self.binary_Y, self.word_index, self.labels = self.process_train(Xdata_train, Ydata_train)
-        self.X_data_val, self.binary_Y_val = self.process_val(Xdata_val, Ydata_val)
+        self.X_data, self.binary_Y, self.word_index, self.labels, self.tokenizer = self.process_train(Xdata_train, Ydata_train)
+        self.X_data_val, self.binary_Y_val = self.process_val(Xdata_val, Ydata_val, self.tokenizer)
 
         # process test data if it exists
         if test:
@@ -92,10 +92,10 @@ class Model:
                 binary_Y.append(label)
         binary_Y = np.array(binary_Y)
 
-        return X_data, binary_Y, word_index, labels
+        return X_data, binary_Y, word_index, labels, tokenizer
 
 
-    def process_val(self, Xdata_val, Ydata_val):
+    def process_val(self, x_data_val, y_data_val, tok):
         """
         Prepares validation data for model.
 
@@ -104,23 +104,22 @@ class Model:
         :return: X&Y validation data ready for model
 
         """
-
-        # creates data frame
-        df_data_val = pd.DataFrame(Xdata_val, columns=['tweet'])
-        df_label_val = pd.DataFrame(Ydata_val, columns=['label'])
+        df_data_val = pd.DataFrame(x_data_val, columns=['tweet'])
+        df_label_val = pd.DataFrame(y_data_val, columns=['label'])
         df_data_val.reset_index(drop=True, inplace=True)
         df_label_val.reset_index(drop=True, inplace=True)
         df_val = pd.concat((df_data_val, df_label_val), axis=1)
 
-        # creates tokenizer
-        tokenizer_val = Tokenizer(num_words=self.maxwords, lower=True)
-        print(df_val['tweet'])
-        tokenizer_val.fit_on_texts(df_val['tweet'])
-        X_data_val = self.get_features(df_val['tweet'], tokenizer_val)
 
-        # binarizes Y data
+
+        # tokenizer_val = Tokenizer(num_words=self.maxwords, lower=True)
+        print(df_val['tweet'])
+        # tokenizer_val.fit_on_texts(df_val['tweet'])
+        X_data_val = self.get_features(df_val['tweet'], tok)
+
         binarizer_val = LabelBinarizer()
         binary_y_val = binarizer_val.fit(df_val['label'].astype(str))
+
         binary_y_val = binarizer_val.transform(df_val['label'])
         binary_Y_val = []
         for label_arr in binary_y_val:

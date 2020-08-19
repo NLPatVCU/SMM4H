@@ -22,6 +22,9 @@ import numpy as np
 from keras_wc_embd import get_dicts_generator, get_embedding_layer, get_embedding_weights_from_file
 import chars2vec
 import talos
+from file import File
+from tensorflow import set_random_seed
+set_random_seed(42)
 
 class CNN:
     def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val, weights, weight_ratios, test, x_test):
@@ -71,7 +74,7 @@ class CNN:
             self.train_test()
 
 
-    def predict(self, model, x_test, y_test, encoder_classes):
+    def predict_model(self, model, x_test, y_test, encoder_classes):
         """
         Takes the predictions as input and returns the indices of the maximum values along an axis using numpy argmax function as true labels.
         Then evaluates it against the trained model
@@ -211,7 +214,7 @@ class CNN:
             model.compile(optimizer='rmsprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
             cv_model, loss, acc = self.fit_Model(model, x_train, y_train)
-            y_pred, y_true = self.predict(cv_model, x_test, y_test, self.labels)
+            y_pred, y_true = self.predict_model(cv_model, x_test, y_test, self.labels)
             y_true = [str(lab) for lab in y_true]
             originalclass.extend(y_true)
             predictedclass.extend(y_pred)
@@ -223,7 +226,7 @@ class CNN:
 
             fold += 1
 
-        y_pred_val, y_true_val = self.predict(cv_model, self.x_val, self.y_val, self.labels)
+        y_pred_val, y_true_val = self.predict_model(cv_model, self.x_val, self.y_val, self.labels)
         y_true_val = [str(lab) for lab in y_true_val]
         print("--------------------------- Results ------------------------------------")
         print(classification_report(y_true_val, y_pred_val, labels=self.labels))
@@ -249,7 +252,7 @@ class CNN:
                             epochs=20,
                             batch_size=512)
 
-        y_pred_val, y_true_val = self.predict(model, self.x_val, self.y_val, self.labels)
+        y_pred_val, y_true_val = self.predict_model(model, self.x_val, self.y_val, self.labels)
         y_true_val = [str(lab) for lab in y_true_val]
         # y_pred = np.array(model.predict(x_val))
 

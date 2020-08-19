@@ -20,4 +20,4 @@ tweets_test = Preprocessing("../../data/test/test.tsv").tweets
 
 model = Model(tweets_train, labels_train, tweets_val, labels_val, 5000, 300, True, tweets_test)
 makembedding = MakeEmbedding(model.word_index, "../../embeddings/glove.twitter.27B.50d.txt", 50, model.maxwords)
-cnn = CNN(model.X_data, model.binary_Y, makembedding.embedding_matrix, model.X_data_val, model.binary_Y_val, model.labels, makembedding.dim, model.maxlen, model.maxwords, 32, False, True, [1, 10], False, None)
+cnn = CNN(model.X_data, model.binary_Y, makembedding.embedding_matrix, model.X_data_val, model.binary_Y_val, model.labels, makembedding.dim, model.maxlen, model.maxwords, 32, True, True, [1, 10], False, None)
