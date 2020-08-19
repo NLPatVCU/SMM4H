@@ -24,7 +24,7 @@ import chars2vec
 import talos
 
 class CNN:
-    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val, test, x_test):
+    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val, weights, weight_ratios, test, x_test):
         """
         Runs CNN.
 
@@ -48,12 +48,16 @@ class CNN:
         self.maxwords = maxwords
         self.filter_length = filter_length
         self.cross_val = cross_val
+        self.weights = weights
 
         if test:
             self.x_test = x_test
             self.test = True
         else:
             self.test = False
+
+        if self.weights:
+            self.weight_ratios = weight_ratios
 
         self.x_train = x_train
         self.y_train = y_train
@@ -138,8 +142,8 @@ class CNN:
         :param y_train: training labels
         :return: model and loss & accuracy stats
         """
-        if False:
-            class_weight= {0:int(sys.argv[5]), 1:int(sys.argv[6])}
+        if self.weights:
+            class_weight= {0:self.weight_ratios[0], 1:self.weight_ratios[1]}
             history = model.fit(x_train, y_train, epochs=20,
                                 batch_size=512, class_weight=class_weight)
             loss = history.history['loss']

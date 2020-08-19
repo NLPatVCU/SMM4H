@@ -9,7 +9,7 @@ import numpy as np
 class Unbalanced:
     def __init__(self, X, Y, unbalanced, multiplier=None, ratio1=None, ratio2=None, ratio1_label=None, ratio2_label=None):
         """
-        Oversamples or desamples data.
+        Oversamples or desamples data. Only works with 2 classes.
 
         :param X:  X data
         :param Y: Y data
@@ -97,7 +97,6 @@ class Unbalanced:
         :param sentences: array of sentences
 
         :return: oversampled sentences, oversampled labels
-
         """
 
         labels_shuffled, sentences_shuffled = shuffle(labels, sentences)
