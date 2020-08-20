@@ -14,14 +14,11 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import confusion_matrix
-from imblearn.over_sampling import SMOTE, ADASYN
 from keras.layers import *
 from keras.models import *
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
 from keras_wc_embd import get_dicts_generator, get_embedding_layer, get_embedding_weights_from_file
-import chars2vec
-import talos
 from file import File
 from tensorflow import set_random_seed
 set_random_seed(42)
