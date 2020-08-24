@@ -32,9 +32,3 @@ Unbalanced
 =============
 .. autoclass:: smm4h.unbalanced.Unbalanced
     :members:
-
-
-File
-=============
-.. autoclass:: smm4h.file.File
-    :members:
