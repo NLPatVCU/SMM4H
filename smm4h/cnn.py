@@ -24,7 +24,10 @@ from tensorflow import set_random_seed
 set_random_seed(42)
 
 class CNN:
-    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val, weights, weight_ratios, test, x_test):
+    def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels,
+    dim, maxlen, maxwords, filter_length, cross_val, weights, weight_ratios, test=False,
+     x_test=None, x_test_path=None, export_path=None, x_col_name=None, y_col_name=None,
+     id_col_name=None):
         """
         This is the class that contains the CNN.
 
@@ -55,8 +58,8 @@ class CNN:
         :type weight_ratios: List
         :param test: flag for test data
         :type test: Bool
-        :param x_test_data: X test data pre-processed
-        :type x_test_data: List
+        :param x_test: X test data pre-processed
+        :type x_test: List
         :param x_test_path: path to X test data
         :type x_test_path: Str
         :param export_path: path to where results should be exported to
@@ -76,12 +79,15 @@ class CNN:
         self.filter_length = filter_length
         self.cross_val = cross_val
         self.weights = weights
+        self.test = test
 
-        if test:
+        if self.test:
             self.x_test = x_test
-            self.test = True
-        else:
-            self.test = False
+            self.x_test_path = x_test_path
+            self.export_path = export_path
+            self.x_col_name = x_col_name
+            self.y_col_name = y_col_name
+            self.id_col_name = id_col_name
 
         if self.weights:
             self.weight_ratios = weight_ratios
@@ -203,13 +209,13 @@ class CNN:
         y_pred_ind = np.argmax(pred, axis=1)
         pred_labels = [self.labels[i] for i in y_pred_ind]
 
-        dataset = pd.read_csv("../../data/test/test.tsv", sep='\t')
-        tweets_id = dataset['tweet_id'].tolist()
-        tweets = dataset['tweet'].tolist()
-        d = {'tweet_id':tweets_id, 'tweets':tweets, 'Class': pred_labels}
+        dataset = pd.read_csv(self.x_test_path, sep='\t')
+        tweets_id = dataset[self.id_col_name].tolist()
+        tweets = dataset[self.x_col_name].tolist()
+        d = {self.id_col_name:tweets_id, self.x_col_name:tweets, self.y_col_name: pred_labels}
 
         df = pd.DataFrame(data=d)
-        df.to_csv("../../data/test/test_new.tsv", sep='\t')
+        df.to_csv(self.export_path, sep='\t')
 
     def cv(self):
         """
