@@ -12,14 +12,21 @@ class Unbalanced:
         Oversamples or desamples data. Only works with 2 classes.
 
         :param X:  X data
+        :type X: List
         :param Y: Y data
+        :type Y: List
         :param unbalanced: flag for desample, oversample or none. Four options: desample, oversample, weights, none.
+        :type unbalanced: Str
         :param multiplier: number to duplicate by for oversampling. 1 more than duplications desired.
+        :type multiplier: Int
         :param ratio1: ratio desired for first label
+        :type ratio1: Int
         :param ratio2: ratio desired for second label
+        :type ratio2: Int
         :param ratio1_label: first label
+        :type ratio1_label: Int
         :param ratio2_label: second label
-
+        :type ratio2_label: Int
         """
         self.unbalanced = unbalanced
 
@@ -40,11 +47,13 @@ class Unbalanced:
         """
         Desamples.
 
-        :param labels: array of labels
-        :param sentences: array of sentences
+        :param labels: y data
+        :type labels: List
+        :param sentences: x data
+        :type sentences: List
 
         :return: desampled sentences, desampled labels
-
+        :rtype: List
         """
         # shuffles labels
         labels_shuffled, sentences_shuffled = shuffle(labels, sentences)
@@ -93,10 +102,13 @@ class Unbalanced:
         """
         Oversamples.
 
-        :param labels: array of labels
-        :param sentences: array of sentences
+        :param labels: y data
+        :type labels: List
+        :param sentences: x data
+        :type sentences: List
 
         :return: oversampled sentences, oversampled labels
+        :rtype: List
         """
 
         labels_shuffled, sentences_shuffled = shuffle(labels, sentences)

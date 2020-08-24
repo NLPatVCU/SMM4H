@@ -11,38 +11,27 @@ from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelBinarizer
 
 
-def read_from_file(file):
-    """
-    Reads external files and insert the content to a list. It also removes whitespace
-    characters like new line chars at the end of each lines.
-
-    :param file: name of the input file.
-    :return content: content of the file in list format
-
-    """
-
-    if not os.path.isfile(file):
-        raise FileNotFoundError("Not a valid file path")
-
-    with open(file) as f:
-        content = f.readlines()
-    content = [x.strip() for x in content]
-
-    return content
-
 class Model:
     def __init__(self, Xdata_train, Ydata_train, Xdata_val, Ydata_val, maxwords, maxlen, test=False, data_test=None):
         """
         Prepares data for CNN
 
         :param Xdata_train: preprocessed X train data
+        :type Xdata_train: List
         :param Ydata_train: preprocessed Y train data
+        :type Ydata_train: List
         :param Xdata_val: preprocessed X validation data
+        :type Xdata_val: List
         :param Ydata_val: preprocessed Y validation data
+        :type Ydata_val: List
         :param maxwords: maximum words to use
+        :type maxwords: Int
         :param maxlen: maximum input length for tweet
+        :type maxlen: Int
+        :param test: test data flag
+        :type test: Bool
         :param data_test: preprocessed test data
-
+        :type data_test: List
         """
 
         self.maxwords = maxwords
@@ -62,8 +51,8 @@ class Model:
 
         :param Xdata_train: CSV file of X train data read in via the read_from_file function
         :param Ydata_train: CSV file of Y train data read in via the read_from_file function
+        :
         :return: X & Y train data, word_index, labels
-
         """
 
         # creates data frame
@@ -99,10 +88,11 @@ class Model:
         """
         Prepares validation data for model.
 
-        :param Xdata_val: CSV file of X validation data read in via the read_from_file function
-        :param Ydata_val: CSV file of Y validation data read in via the read_from_file function
+        :param Xdata_val: x validation data
+        :type Xdata_val: List
+        :param Ydata_val: y validation data
+        :type Ydata_val: List
         :return: X&Y validation data ready for model
-
         """
         df_data_val = pd.DataFrame(x_data_val, columns=['tweet'])
         df_label_val = pd.DataFrame(y_data_val, columns=['label'])
@@ -134,11 +124,11 @@ class Model:
         """
         Prepares test data for model.
 
-        :param data_test: CSV of test data read in via the read_from_file function
+        :param data_test: x test data
+        :param data_test: List
         :return: X test data prepared for model
-
+        :rtype: List
         """
-
         # creates data frame
         df_test = pd.DataFrame(data_test, columns=['tweet'])
 
@@ -158,7 +148,6 @@ class Model:
         :param text_series: text to create sequences from
         :param tokenizer: scikit learn tokenizer that has been fitted to text
         :return: padded sequences
-
         """
 
         sequences = tokenizer.texts_to_sequences(text_series)

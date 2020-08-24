@@ -26,20 +26,47 @@ set_random_seed(42)
 class CNN:
     def __init__(self, x_train, y_train, embedding_matrix, x_val, y_val, labels, dim, maxlen, maxwords, filter_length, cross_val, weights, weight_ratios, test, x_test):
         """
-        Runs CNN.
+        This is the class that contains the CNN.
 
         :param x_train: X train data pre-processed
+        :type x_train: List
         :param y_train: Y train data pre-processed
+        :type y_train: List
         :param embedding_matrix: embedding ready for embedding layer
         :param x_val: X validation data pre-processed
+        :type x_val: List
         :param y_val: Y validation data pre-processed
+        :type y_val: List
         :param labels: list of unique labels
+        :type labels: List
         :param dim: dimension of word embedding
+        :type dim: Int
         :param maxlen: maximum input length of a tweet
+        :type maxlen: Int
         :param maxwords: maximum words
+        :type maxwords: Int
         :param filter_length: length of filter
+        :type filter_length: Int
         :param cross_val: flag for cross validation
-        :param x_test: test data
+        :type cross_val: Bool
+        :param weights: flag for keras class weights
+        :type weights: Bool
+        :param weight_ratios: list of weights
+        :type weight_ratios: List
+        :param test: flag for test data
+        :type test: Bool
+        :param x_test_data: X test data pre-processed
+        :type x_test_data: List
+        :param x_test_path: path to X test data
+        :type x_test_path: Str
+        :param export_path: path to where results should be exported to
+        :type export_path: Str
+        :param x_col_name: name of the column with the X data
+        :type x_col_name: Str
+        :param y_col_name: name of the column with the Y data
+        :type y_col_name: Str
+        :param id_col_name: name of the column with the IDs
+        :type id_col_name: Str
         """
 
         self.labels = labels
@@ -78,9 +105,13 @@ class CNN:
 
         :param model: trained model
         :param x_test: test data
+        :type x_test: List
         :param y_test: test true labels
-        :param encoder_classes:
+        :type y_test: List
+        :param encoder_classes: labels
+        :type encoder_classes: List
         :return: predicted and true labels
+        :rtype: List
         """
         pred = model.predict(x_test)
         y_true = y_test
@@ -95,11 +126,14 @@ class CNN:
 
     def cv_evaluation_fold(self, y_pred, y_true, labels):
         """
-        Evaluation metrics for emicroach fold
+        Evaluation metrics for emicroach fold.
 
-        :param y_pred: predicted labels
-        :param y_true: true labels
-        :param labels: list of the classes
+        :param y_pred: predicted y data
+        :type y_pred: List
+        :param y_true: correct y data
+        :type y_true: List
+        :param labels: list of possible labels
+        :type labels: List
         :return: fold stats
         """
         fold_statistics = {}
@@ -129,6 +163,7 @@ class CNN:
 
         :param prediction: prediction for X data
         :return: labels in dictionary form
+        :rtype: dict
         """
         tag_prob = [(labels[i], prob) for i, prob in enumerate(prediction.tolist())]
         return dict(sorted(tag_prob, key=lambda kv: kv[1], reverse=True))
@@ -139,7 +174,9 @@ class CNN:
 
         :param model: trained model
         :param x_train: training data
+        :type x_train: List
         :param y_train: training labels
+        :type y_train: List
         :return: model and loss & accuracy stats
         """
         if self.weights:
@@ -159,6 +196,9 @@ class CNN:
         return model, loss, acc
 
     def test_data(self, model):
+        """
+        This file will export test data. You will likely have to modifiy it slightly.
+        """
         pred = model.predict(self.x_test)
         y_pred_ind = np.argmax(pred, axis=1)
         pred_labels = [self.labels[i] for i in y_pred_ind]
@@ -174,14 +214,6 @@ class CNN:
     def cv(self):
         """
         This function does the cross validation.
-
-        :param x_train_data: processed X train data.
-        :param y_train_data: processed Y train data.
-        :param embedding_matrix: embedding perpared for embedding layer.
-        :param x_val: processed X validation data.
-        :param y_val: processed Y validation data.
-        :param labels: list of labels.
-        param X_data_test: processed test data.
         """
         skf = StratifiedKFold(n_splits=5, shuffle=True)
         skf.get_n_splits(self.x_train, self.y_train)
@@ -233,6 +265,9 @@ class CNN:
 
 
     def train_test(self):
+        """
+        This function does train-test.
+        """
         model = Sequential()
         model.add(Embedding(self.maxwords, self.dim, weights=[self.embedding_matrix], input_length=self.maxlen))
         model.add(Conv1D(self.filter_length, 1, activation='relu'))

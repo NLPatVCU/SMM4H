@@ -13,9 +13,13 @@ class MakeEmbedding:
 
         :param word_index: word_index from model file
         :param embedding: path to embedding file
+        :type embedding: Str
         :param dim: dimension of the embedding
+        :type dim: Int
         :param maxwords: maximum number of words to use
+        :type maxwords: Int
         :param error_handling: flag for embedding read function that handles errors
+        :type error_handling: Bool
         """
 
         self.word_index = word_index
@@ -37,7 +41,9 @@ class MakeEmbedding:
         to their vector representation (as number vectors).
 
         :param path: path to emebedding
+        :type path: Str
         :return dictionary: word vectors
+        :rtype: dictionary: dict
         """
         # rasies error if there's an invalid file path
         print("Reading external embedding file ......")
@@ -64,7 +70,9 @@ class MakeEmbedding:
         embeddings that are tricky to read.
 
         :param path: path to emebedding
+        :type path: Str
         :return dictionary: word vectors
+        :type dictionary: Dict
         """
 
         # rasies error if there's an invalid file path
@@ -99,6 +107,7 @@ class MakeEmbedding:
         function that creates embedding matrix from word_index.
 
         :param word_index: word index of X data
+        :type word_index: Dict
         :return: embedding matrix
         """
 
