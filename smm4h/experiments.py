@@ -7,15 +7,17 @@ from file import File
 import sys
 sys.path.append(".")
 
-tweets_train = Preprocessing("../../data/train/task2_en_training.tsv").tweets
-labels_train = File().read_from_file("../../data/train/labels")
-tweets_val = Preprocessing("../../data/validation/task2_en_validation.tsv").tweets
-labels_val =  File().read_from_file("../../data/validation/labels_val")
+tweets_train = Preprocessing("../../data/train/task2_en_training.tsv", False).tweets
+# labels_train = File().read_from_file("../../data/train/labels")
+labels_train = Preprocessing("../../data/train/task2_en_training.tsv", False).labels
+tweets_val = Preprocessing("../../data/validation/task2_en_validation.tsv", False).tweets
+# labels_val =  File().read_from_file("../../data/validation/labels_val")
+labels_val = Preprocessing("../../data/validation/task2_en_validation.tsv", False).labels
 
 unbalanced = Unbalanced(tweets_train, labels_train, "desample", None, 1, 4, "1", "0")
 oversampleX = unbalanced.X
 oversampleY = unbalanced.Y
-tweets_test = Preprocessing("../../data/test/test.tsv").tweets
+tweets_test = Preprocessing("../../data/test/test.tsv", True).tweets
 
 
 model = Model(tweets_train, labels_train, tweets_val, labels_val, 5000, 300, True, tweets_test)
