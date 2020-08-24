@@ -82,14 +82,13 @@
             
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">SMM4H’s documentation!</a><ul>
+<li><a class="reference internal" href="#">SMM4H’s documentation!</a></li>
 <li><a class="reference internal" href="#cnn">CNN</a></li>
 <li><a class="reference internal" href="#model">Model</a></li>
 <li><a class="reference internal" href="#embedding">Embedding</a></li>
 <li><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
 <li><a class="reference internal" href="#unbalanced">Unbalanced</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#file">File</a></li>
 </ul>
 </div>
             
@@ -156,62 +155,69 @@
            <div itemprop="articleBody">
             
   <div class="section" id="smm4h-s-documentation">
-<h1>SMM4H’s documentation!<a class="headerlink" href="#smm4h-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
+<h1><a class="toc-backref" href="#id1">SMM4H’s documentation!</a><a class="headerlink" href="#smm4h-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Welcome to SMM4H’s documentation. Check out our <a class="reference external" href="https://github.com/NLPatVCU/SMM4H/blob/master/README.md">ReadMe</a> for more details.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#smm4h-s-documentation" id="id1">SMM4H’s documentation!</a></p></li>
+<li><p><a class="reference internal" href="#cnn" id="id2">CNN</a></p></li>
+<li><p><a class="reference internal" href="#model" id="id3">Model</a></p></li>
+<li><p><a class="reference internal" href="#embedding" id="id4">Embedding</a></p></li>
+<li><p><a class="reference internal" href="#preprocessing" id="id5">Preprocessing</a></p></li>
+<li><p><a class="reference internal" href="#unbalanced" id="id6">Unbalanced</a></p></li>
+<li><p><a class="reference internal" href="#file" id="id7">File</a></p></li>
+</ul>
+</div>
 </div>
 <div class="section" id="cnn">
-<h2>CNN<a class="headerlink" href="#cnn" title="Permalink to this headline">¶</a></h2>
+<h1><a class="toc-backref" href="#id2">CNN</a><a class="headerlink" href="#cnn" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="smm4h.cnn.CNN">
-<em class="property">class </em><code class="sig-prename descclassname">smm4h.cnn.</code><code class="sig-name descname">CNN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_train</span></em>, <em class="sig-param"><span class="n">y_train</span></em>, <em class="sig-param"><span class="n">embedding_matrix</span></em>, <em class="sig-param"><span class="n">x_val</span></em>, <em class="sig-param"><span class="n">y_val</span></em>, <em class="sig-param"><span class="n">labels</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">maxlen</span></em>, <em class="sig-param"><span class="n">maxwords</span></em>, <em class="sig-param"><span class="n">filter_length</span></em>, <em class="sig-param"><span class="n">cross_val</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">x_test</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs CNN.</p>
+<em class="property">class </em><code class="sig-prename descclassname">smm4h.cnn.</code><code class="sig-name descname">CNN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_train</span></em>, <em class="sig-param"><span class="n">y_train</span></em>, <em class="sig-param"><span class="n">embedding_matrix</span></em>, <em class="sig-param"><span class="n">x_val</span></em>, <em class="sig-param"><span class="n">y_val</span></em>, <em class="sig-param"><span class="n">labels</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">maxlen</span></em>, <em class="sig-param"><span class="n">maxwords</span></em>, <em class="sig-param"><span class="n">filter_length</span></em>, <em class="sig-param"><span class="n">cross_val</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">weight_ratios</span></em>, <em class="sig-param"><span class="n">test</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">x_test</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_test_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">export_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_col_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_col_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">id_col_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the class that contains the CNN.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_train</strong> – X train data pre-processed</p></li>
-<li><p><strong>y_train</strong> – Y train data pre-processed</p></li>
+<li><p><strong>x_train</strong> (<em>List</em>) – X train data pre-processed</p></li>
+<li><p><strong>y_train</strong> (<em>List</em>) – Y train data pre-processed</p></li>
 <li><p><strong>embedding_matrix</strong> – embedding ready for embedding layer</p></li>
-<li><p><strong>x_val</strong> – X validation data pre-processed</p></li>
-<li><p><strong>y_val</strong> – Y validation data pre-processed</p></li>
-<li><p><strong>labels</strong> – list of unique labels</p></li>
-<li><p><strong>dim</strong> – dimension of word embedding</p></li>
-<li><p><strong>maxlen</strong> – maximum input length of a tweet</p></li>
-<li><p><strong>maxwords</strong> – maximum words</p></li>
-<li><p><strong>filter_length</strong> – length of filter</p></li>
-<li><p><strong>cross_val</strong> – flag for cross validation</p></li>
-<li><p><strong>x_test</strong> – test data</p></li>
+<li><p><strong>x_val</strong> (<em>List</em>) – X validation data pre-processed</p></li>
+<li><p><strong>y_val</strong> (<em>List</em>) – Y validation data pre-processed</p></li>
+<li><p><strong>labels</strong> (<em>List</em>) – list of unique labels</p></li>
+<li><p><strong>dim</strong> (<em>Int</em>) – dimension of word embedding</p></li>
+<li><p><strong>maxlen</strong> (<em>Int</em>) – maximum input length of a tweet</p></li>
+<li><p><strong>maxwords</strong> (<em>Int</em>) – maximum words</p></li>
+<li><p><strong>filter_length</strong> (<em>Int</em>) – length of filter</p></li>
+<li><p><strong>cross_val</strong> (<em>Bool</em>) – flag for cross validation</p></li>
+<li><p><strong>weights</strong> (<em>Bool</em>) – flag for keras class weights</p></li>
+<li><p><strong>weight_ratios</strong> (<em>List</em>) – list of weights</p></li>
+<li><p><strong>test</strong> (<em>Bool</em>) – flag for test data</p></li>
+<li><p><strong>x_test</strong> (<em>List</em>) – X test data pre-processed</p></li>
+<li><p><strong>x_test_path</strong> (<em>Str</em>) – path to X test data</p></li>
+<li><p><strong>export_path</strong> (<em>Str</em>) – path to where results should be exported to</p></li>
+<li><p><strong>x_col_name</strong> (<em>Str</em>) – name of the column with the X data</p></li>
+<li><p><strong>y_col_name</strong> (<em>Str</em>) – name of the column with the Y data</p></li>
+<li><p><strong>id_col_name</strong> (<em>Str</em>) – name of the column with the IDs</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt id="smm4h.cnn.CNN.cv">
-<code class="sig-name descname">cv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_train_data</span></em>, <em class="sig-param"><span class="n">y_train_data</span></em>, <em class="sig-param"><span class="n">embedding_matrix</span></em>, <em class="sig-param"><span class="n">x_val</span></em>, <em class="sig-param"><span class="n">y_val</span></em>, <em class="sig-param"><span class="n">labels</span></em>, <em class="sig-param"><span class="n">X_data_test</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN.cv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN.cv" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function does the cross validation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x_train_data</strong> – processed X train data.</p></li>
-<li><p><strong>y_train_data</strong> – processed Y train data.</p></li>
-<li><p><strong>embedding_matrix</strong> – embedding perpared for embedding layer.</p></li>
-<li><p><strong>x_val</strong> – processed X validation data.</p></li>
-<li><p><strong>y_val</strong> – processed Y validation data.</p></li>
-<li><p><strong>labels</strong> – list of labels.</p></li>
-</ul>
-</dd>
-</dl>
-<p>param X_data_test: processed test data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="smm4h.cnn.CNN.cv_evaluation_fold">
 <code class="sig-name descname">cv_evaluation_fold</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_pred</span></em>, <em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">labels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN.cv_evaluation_fold" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluation metrics for emicroach fold</p>
+<dd><p>Evaluation metrics for emicroach fold.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y_pred</strong> – predicted labels</p></li>
-<li><p><strong>y_true</strong> – true labels</p></li>
-<li><p><strong>labels</strong> – list of the classes</p></li>
+<li><p><strong>y_pred</strong> (<em>List</em>) – predicted y data</p></li>
+<li><p><strong>y_true</strong> (<em>List</em>) – correct y data</p></li>
+<li><p><strong>labels</strong> (<em>List</em>) – list of possible labels</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -228,8 +234,8 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> – trained model</p></li>
-<li><p><strong>x_train</strong> – training data</p></li>
-<li><p><strong>y_train</strong> – training labels</p></li>
+<li><p><strong>x_train</strong> (<em>List</em>) – training data</p></li>
+<li><p><strong>y_train</strong> (<em>List</em>) – training labels</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -239,21 +245,24 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="smm4h.cnn.CNN.predict">
-<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">x_test</span></em>, <em class="sig-param"><span class="n">y_test</span></em>, <em class="sig-param"><span class="n">encoder_classes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN.predict" title="Permalink to this definition">¶</a></dt>
+<dt id="smm4h.cnn.CNN.predict_model">
+<code class="sig-name descname">predict_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">x_test</span></em>, <em class="sig-param"><span class="n">y_test</span></em>, <em class="sig-param"><span class="n">encoder_classes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN.predict_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes the predictions as input and returns the indices of the maximum values along an axis using numpy argmax function as true labels.
 Then evaluates it against the trained model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> – trained model</p></li>
-<li><p><strong>x_test</strong> – test data</p></li>
-<li><p><strong>y_test</strong> – test true labels</p></li>
-<li><p><strong>encoder_classes</strong> – </p></li>
+<li><p><strong>x_test</strong> (<em>List</em>) – test data</p></li>
+<li><p><strong>y_test</strong> (<em>List</em>) – test true labels</p></li>
+<li><p><strong>encoder_classes</strong> (<em>List</em>) – labels</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>predicted and true labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
@@ -269,28 +278,44 @@ Then evaluates it against the trained model</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>labels in dictionary form</p>
 </dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="smm4h.cnn.CNN.test_data">
+<code class="sig-name descname">test_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN.test_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This file will export test data. You will likely have to modifiy it slightly.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="smm4h.cnn.CNN.train_test">
+<code class="sig-name descname">train_test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.cnn.CNN.train_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function does train-test.</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="model">
-<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<h1><a class="toc-backref" href="#id3">Model</a><a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="smm4h.model.Model">
-<em class="property">class </em><code class="sig-prename descclassname">smm4h.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Xdata_train</span></em>, <em class="sig-param"><span class="n">Ydata_train</span></em>, <em class="sig-param"><span class="n">Xdata_val</span></em>, <em class="sig-param"><span class="n">Ydata_val</span></em>, <em class="sig-param"><span class="n">maxwords</span></em>, <em class="sig-param"><span class="n">maxlen</span></em>, <em class="sig-param"><span class="n">data_test</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.model.Model" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">smm4h.model.</code><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Xdata_train</span></em>, <em class="sig-param"><span class="n">Ydata_train</span></em>, <em class="sig-param"><span class="n">Xdata_val</span></em>, <em class="sig-param"><span class="n">Ydata_val</span></em>, <em class="sig-param"><span class="n">maxwords</span></em>, <em class="sig-param"><span class="n">maxlen</span></em>, <em class="sig-param"><span class="n">test</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">data_test</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.model.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepares data for CNN</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Xdata_train</strong> – preprocessed X train data</p></li>
-<li><p><strong>Ydata_train</strong> – preprocessed Y train data</p></li>
-<li><p><strong>Xdata_val</strong> – preprocessed X validation data</p></li>
-<li><p><strong>Ydata_val</strong> – preprocessed Y validation data</p></li>
-<li><p><strong>maxwords</strong> – maximum words to use</p></li>
-<li><p><strong>maxlen</strong> – maximum input length for tweet</p></li>
-<li><p><strong>data_test</strong> – preprocessed test data</p></li>
+<li><p><strong>Xdata_train</strong> (<em>List</em>) – preprocessed X train data</p></li>
+<li><p><strong>Ydata_train</strong> (<em>List</em>) – preprocessed Y train data</p></li>
+<li><p><strong>Xdata_val</strong> (<em>List</em>) – preprocessed X validation data</p></li>
+<li><p><strong>Ydata_val</strong> (<em>List</em>) – preprocessed Y validation data</p></li>
+<li><p><strong>maxwords</strong> (<em>Int</em>) – maximum words to use</p></li>
+<li><p><strong>maxlen</strong> (<em>Int</em>) – maximum input length for tweet</p></li>
+<li><p><strong>test</strong> (<em>Bool</em>) – test data flag</p></li>
+<li><p><strong>data_test</strong> (<em>List</em>) – preprocessed test data</p></li>
 </ul>
 </dd>
 </dl>
@@ -318,10 +343,16 @@ tokenizer must be available.</p>
 <dd><p>Prepares test data for model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data_test</strong> – CSV of test data read in via the read_from_file function</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_test</strong> – x test data</p></li>
+<li><p><strong>data_test</strong> – List</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>X test data prepared for model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
@@ -337,21 +368,20 @@ tokenizer must be available.</p>
 <li><p><strong>Ydata_train</strong> – CSV file of Y train data read in via the read_from_file function</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>X &amp; Y train data, word_index, labels</p>
-</dd>
 </dl>
+<p>:
+:return: X &amp; Y train data, word_index, labels</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="smm4h.model.Model.process_val">
-<code class="sig-name descname">process_val</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Xdata_val</span></em>, <em class="sig-param"><span class="n">Ydata_val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.model.Model.process_val" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">process_val</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_data_val</span></em>, <em class="sig-param"><span class="n">y_data_val</span></em>, <em class="sig-param"><span class="n">tok</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.model.Model.process_val" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepares validation data for model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Xdata_val</strong> – CSV file of X validation data read in via the read_from_file function</p></li>
-<li><p><strong>Ydata_val</strong> – CSV file of Y validation data read in via the read_from_file function</p></li>
+<li><p><strong>Xdata_val</strong> (<em>List</em>) – x validation data</p></li>
+<li><p><strong>Ydata_val</strong> (<em>List</em>) – y validation data</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -364,7 +394,7 @@ tokenizer must be available.</p>
 
 </div>
 <div class="section" id="embedding">
-<h2>Embedding<a class="headerlink" href="#embedding" title="Permalink to this headline">¶</a></h2>
+<h1><a class="toc-backref" href="#id4">Embedding</a><a class="headerlink" href="#embedding" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="smm4h.embedding.MakeEmbedding">
 <em class="property">class </em><code class="sig-prename descclassname">smm4h.embedding.</code><code class="sig-name descname">MakeEmbedding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">word_index</span></em>, <em class="sig-param"><span class="n">embedding</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">maxwords</span></em>, <em class="sig-param"><span class="n">error_handling</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.embedding.MakeEmbedding" title="Permalink to this definition">¶</a></dt>
@@ -373,10 +403,10 @@ tokenizer must be available.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>word_index</strong> – word_index from model file</p></li>
-<li><p><strong>embedding</strong> – path to embedding file</p></li>
-<li><p><strong>dim</strong> – dimension of the embedding</p></li>
-<li><p><strong>maxwords</strong> – maximum number of words to use</p></li>
-<li><p><strong>error_handling</strong> – flag for embedding read function that handles errors</p></li>
+<li><p><strong>embedding</strong> (<em>Str</em>) – path to embedding file</p></li>
+<li><p><strong>dim</strong> (<em>Int</em>) – dimension of the embedding</p></li>
+<li><p><strong>maxwords</strong> (<em>Int</em>) – maximum number of words to use</p></li>
+<li><p><strong>error_handling</strong> (<em>Bool</em>) – flag for embedding read function that handles errors</p></li>
 </ul>
 </dd>
 </dl>
@@ -386,7 +416,7 @@ tokenizer must be available.</p>
 <dd><p>function that creates embedding matrix from word_index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>word_index</strong> – word index of X data</p>
+<dd class="field-odd"><p><strong>word_index</strong> (<em>Dict</em>) – word index of X data</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>embedding matrix</p>
@@ -401,10 +431,13 @@ tokenizer must be available.</p>
 to their vector representation (as number vectors).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – path to emebedding</p>
+<dd class="field-odd"><p><strong>path</strong> (<em>Str</em>) – path to emebedding</p>
 </dd>
 <dt class="field-even">Return dictionary</dt>
 <dd class="field-even"><p>word vectors</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary: dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -418,7 +451,7 @@ as def read_embeddings_from_file except has addional error handling for some
 embeddings that are tricky to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – path to emebedding</p>
+<dd class="field-odd"><p><strong>path</strong> (<em>Str</em>) – path to emebedding</p>
 </dd>
 <dt class="field-even">Return dictionary</dt>
 <dd class="field-even"><p>word vectors</p>
@@ -430,20 +463,68 @@ embeddings that are tricky to read.</p>
 
 </div>
 <div class="section" id="preprocessing">
-<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h2>
+<h1><a class="toc-backref" href="#id5">Preprocessing</a><a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="smm4h.preprocessing.Preprocessing">
-<em class="property">class </em><code class="sig-prename descclassname">smm4h.preprocessing.</code><code class="sig-name descname">Preprocessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.preprocessing.Preprocessing" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
+<em class="property">class </em><code class="sig-prename descclassname">smm4h.preprocessing.</code><code class="sig-name descname">Preprocessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">test</span></em>, <em class="sig-param"><span class="n">x_col_name</span></em>, <em class="sig-param"><span class="n">y_col_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.preprocessing.Preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd><p>This file preprocesses the data and cleans it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>Str</em>) – path to data file</p></li>
+<li><p><strong>test</strong> (<em>Bool</em>) – flag for if this is processing the test data</p></li>
+<li><p><strong>x_col_name</strong> (<em>Str</em>) – Name of the column that has the X data</p></li>
+<li><p><strong>y_col_name</strong> (<em>Str</em>) – Name of the column that has the Y data</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="smm4h.preprocessing.Preprocessing.remove_drug_names">
+<code class="sig-name descname">remove_drug_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tweets</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.preprocessing.Preprocessing.remove_drug_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces drug names with word drug. This is an experimental feature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tweets</strong> (<em>List</em>) – X data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tweets in list with drug names replaced</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="smm4h.preprocessing.Preprocessing.remove_html">
+<code class="sig-name descname">remove_html</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tweets</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.preprocessing.Preprocessing.remove_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes &amp;amp</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tweets</strong> (<em>List</em>) – X data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tweets in list &amp;amp removed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="smm4h.preprocessing.Preprocessing.remove_punctuation">
 <code class="sig-name descname">remove_punctuation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tweets</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.preprocessing.Preprocessing.remove_punctuation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes double quotes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tweets</strong> – list of tweets</p>
+<dd class="field-odd"><p><strong>tweets</strong> (<em>List</em>) – X data</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>tweets in list with double quotes removed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
@@ -454,10 +535,47 @@ embeddings that are tricky to read.</p>
 <dd><p>Remove emojis and replace them with word that represents  them</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tweets</strong> – list of tweets</p>
+<dd class="field-odd"><p><strong>tweets</strong> (<em>List</em>) – X data</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>tweets in list with emojis replaced</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="smm4h.preprocessing.Preprocessing.replace_hashtags">
+<code class="sig-name descname">replace_hashtags</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tweets</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.preprocessing.Preprocessing.replace_hashtags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces hashtags with word hashtag</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tweets</strong> (<em>List</em>) – X data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tweets in list with hashtags replaced</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="smm4h.preprocessing.Preprocessing.replace_links">
+<code class="sig-name descname">replace_links</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tweets</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.preprocessing.Preprocessing.replace_links" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces links with word hyperlink</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tweets</strong> (<em>List</em>) – X data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tweets in list with links replaced</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
@@ -468,10 +586,13 @@ embeddings that are tricky to read.</p>
 <dd><p>Replaces usernames with word username</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tweets</strong> – list of tweets</p>
+<dd class="field-odd"><p><strong>tweets</strong> (<em>List</em>) – X data</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>tweets in list with usernames replaced</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
@@ -480,22 +601,22 @@ embeddings that are tricky to read.</p>
 
 </div>
 <div class="section" id="unbalanced">
-<h2>Unbalanced<a class="headerlink" href="#unbalanced" title="Permalink to this headline">¶</a></h2>
+<h1><a class="toc-backref" href="#id6">Unbalanced</a><a class="headerlink" href="#unbalanced" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="smm4h.unbalanced.Unbalanced">
 <em class="property">class </em><code class="sig-prename descclassname">smm4h.unbalanced.</code><code class="sig-name descname">Unbalanced</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">unbalanced</span></em>, <em class="sig-param"><span class="n">multiplier</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ratio1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ratio2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ratio1_label</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ratio2_label</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.unbalanced.Unbalanced" title="Permalink to this definition">¶</a></dt>
-<dd><p>Oversamples or desamples data.</p>
+<dd><p>Oversamples or desamples data. Only works with 2 classes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> – path to X data</p></li>
-<li><p><strong>Y</strong> – path to Y data</p></li>
-<li><p><strong>unbalanced</strong> – flag for desample, oversample or none. Four options: desample, oversample, weights, none.</p></li>
-<li><p><strong>multiplier</strong> – number to duplicate by for oversampling. 1 more than duplications desired.</p></li>
-<li><p><strong>ratio1</strong> – ratio desired for first label</p></li>
-<li><p><strong>ratio2</strong> – ratio desired for second label</p></li>
-<li><p><strong>ratio1_label</strong> – first label</p></li>
-<li><p><strong>ratio2_label</strong> – second label</p></li>
+<li><p><strong>X</strong> (<em>List</em>) – X data</p></li>
+<li><p><strong>Y</strong> (<em>List</em>) – Y data</p></li>
+<li><p><strong>unbalanced</strong> (<em>Str</em>) – flag for desample, oversample or none. Four options: desample, oversample, weights, none.</p></li>
+<li><p><strong>multiplier</strong> (<em>Int</em>) – number to duplicate by for oversampling. 1 more than duplications desired.</p></li>
+<li><p><strong>ratio1</strong> (<em>Int</em>) – ratio desired for first label</p></li>
+<li><p><strong>ratio2</strong> (<em>Int</em>) – ratio desired for second label</p></li>
+<li><p><strong>ratio1_label</strong> (<em>Int</em>) – first label</p></li>
+<li><p><strong>ratio2_label</strong> (<em>Int</em>) – second label</p></li>
 </ul>
 </dd>
 </dl>
@@ -506,12 +627,15 @@ embeddings that are tricky to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>labels</strong> – array of labels</p></li>
-<li><p><strong>sentences</strong> – array of sentences</p></li>
+<li><p><strong>labels</strong> (<em>List</em>) – y data</p></li>
+<li><p><strong>sentences</strong> (<em>List</em>) – x data</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>desampled sentences, desampled labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
@@ -523,12 +647,15 @@ embeddings that are tricky to read.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>labels</strong> – array of labels</p></li>
-<li><p><strong>sentences</strong> – array of sentences</p></li>
+<li><p><strong>labels</strong> (<em>List</em>) – y data</p></li>
+<li><p><strong>sentences</strong> (<em>List</em>) – x data</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>oversampled sentences, oversampled labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
@@ -536,6 +663,49 @@ embeddings that are tricky to read.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="file">
+<h1><a class="toc-backref" href="#id7">File</a><a class="headerlink" href="#file" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="smm4h.file.File">
+<em class="property">class </em><code class="sig-prename descclassname">smm4h.file.</code><code class="sig-name descname">File</code><a class="headerlink" href="#smm4h.file.File" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="smm4h.file.File.read_from_file">
+<code class="sig-name descname">read_from_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.file.File.read_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Reads external files and insert the content to a list. It also removes whitespace
+characters like `</p>
+</div></blockquote>
+<p>` at the end of each lines.</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">param file</dt>
+<dd class="field-odd"><p>name of the input file.</p>
+</dd>
+<dt class="field-even">type file</dt>
+<dd class="field-even"><p>Str</p>
+</dd>
+</dl>
+<p>:return : content of the file
+:rtype: List</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt id="smm4h.file.File.write_from_list">
+<code class="sig-name descname">write_from_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">list</span></em>, <em class="sig-param"><span class="n">file_path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#smm4h.file.File.write_from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a csv file from a list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list</strong> (<em>List</em>) – list to become a csv file</p></li>
+<li><p><strong>file_path</strong> (<em>Str</em>) – path/name to the new file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
