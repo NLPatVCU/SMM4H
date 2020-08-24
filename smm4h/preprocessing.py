@@ -3,6 +3,18 @@ import pandas as pd
 
 class Preprocessing:
     def __init__(self, file, test, x_col_name, y_col_name):
+        """
+        This file preprocesses the data and cleans it.
+
+        :param file: path to data file
+        :type file: Str
+        :param test: flag for if this is processing the test data
+        :type test: Bool
+        :param x_col_name: Name of the column that has the X data
+        :type x_col_name: Str
+        :param y_col_name: Name of the column that has the Y data
+        :type y_col_name: Str
+        """
         self.file = file
         self.test = test
         self.x_col_name = x_col_name
@@ -14,11 +26,12 @@ class Preprocessing:
         tweets_no_links = self.replace_links(tweets_no_hashtag)
         tweets_no_usernames = self.replace_usernames(tweets_no_links)
         self.tweets = self.replace_emojis(tweets_no_usernames)
+
         if self.test:
             self.labels = None
             self.y_col_name = None
         else:
-            self.y_col_name = y_col_name 
+            self.y_col_name = y_col_name
             self.labels = dataset[self.y_col_name].tolist()
             self.labels = [str(lab) for lab in self.labels]
 
@@ -26,8 +39,10 @@ class Preprocessing:
         """
         Removes double quotes
 
-        :param tweets: list of tweets
+        :param tweets:  X data
+        :type tweets: List
         :return: tweets in list with double quotes removed
+        :rtype: List
         """
         tweets_clean = []
         for tweet in tweets:
@@ -41,8 +56,10 @@ class Preprocessing:
         """
         Remove emojis and replace them with word that represents  them
 
-        :param tweets: list of tweets
+        :param tweets: X data
+        :type tweets: List
         :return: tweets in list with emojis replaced
+        :rtype: List
         """
         tweets_no_emojis = []
         for tweet in tweets:
@@ -63,8 +80,10 @@ class Preprocessing:
         """
         Replaces usernames with word username
 
-        :param tweets: list of tweets
+        :param tweets: X data
+        :type tweets: List
         :return: tweets in list with usernames replaced
+        :rtype: List
         """
         tweets_no_usernames = []
         for tweet in tweets:
@@ -79,6 +98,14 @@ class Preprocessing:
         return tweets_no_usernames
 
     def replace_links(self, tweets):
+        """
+        Replaces links with word hyperlink
+
+        :param tweets: X data
+        :type tweets: List
+        :return: tweets in list with links replaced
+        :rtype: List
+        """
         tweets_no_links=[]
         for tweet in tweets:
             tweet_no_link = ""
@@ -92,6 +119,14 @@ class Preprocessing:
         return tweets_no_links
 
     def replace_hashtags(self, tweets):
+        """
+        Replaces hashtags with word hashtag
+
+        :param tweets: X data
+        :type tweets: List
+        :return: tweets in list with hashtags replaced
+        :rtype: List
+        """
         tweets_no_hashtag = []
         for tweet in tweets:
             tweet_no_hashtag = ""
@@ -108,6 +143,14 @@ class Preprocessing:
         return tweets_no_hashtag
 
     def remove_html(self, tweets):
+        """
+        Removes &amp
+
+        :param tweets: X data
+        :type tweets: List
+        :return: tweets in list &amp removed
+        :rtype: List
+        """
         tweets_no_html = []
         for tweet in tweets:
             tweet_no_html = ""
@@ -120,6 +163,16 @@ class Preprocessing:
         return tweets_no_html
 
     def remove_drug_names(self, tweets):
+        """
+        Replaces drug names with word drug. This is an experimental feature.
+
+        :param tweets: X data
+        :type tweets: List
+        :return: tweets in list with drug names replaced
+        :rtype: List
+        """
+        # this code creates a list of drug names. You will have to change it so
+        # it works with whatever file of drug name you have 
         tweets_no_drug_names = []
         drugs = pd.read_csv("Products.txt", sep="\t", error_bad_lines=False)
         drug_name_list = drugs['DrugName'].tolist()
@@ -127,6 +180,8 @@ class Preprocessing:
         for drugs in drug_name_list:
             for drug in drugs.split(' '):
                 my_list.append(drug.strip().lower())
+
+
         for tweet in tweets:
             tweet_no_drugs = ""
             for word in tweet.split(' '):
