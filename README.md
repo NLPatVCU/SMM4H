@@ -14,7 +14,13 @@ pip install -r requirements.txt
 ```
 
 ## Overview 
-
+Data is preprocessed and extraneous information is removed. Then, it can be passed through the Unbalanced class where it can be desampled or oversampled. After that, the data goes through the Model class where it is prepared for the CNN. Finally, the CNN is run. At this stage, there is an option to do CV or train-test, use Test data, or use Keras class weights. 
 ## Running Experiments 
-
+To run an experiment: 
+```
+python experiments.py
+```
+In the experiments.py file, there is an example and comments for other possible options. 
+## Docs
+For more detailed documentation, check out: https://smm4h.readthedocs.io/en/latest 
   
