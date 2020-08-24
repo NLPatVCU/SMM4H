@@ -2,11 +2,12 @@ import emoji
 import pandas as pd
 
 class Preprocessing:
-    def __init__(self, file, test):
+    def __init__(self, file, test, x_col_name, y_col_name):
         self.file = file
         self.test = test
+        self.x_col_name = x_col_name
         dataset = pd.read_csv(file, sep='\t')
-        tweets = dataset['tweet'].tolist()
+        tweets = dataset[self.x_col_name].tolist()
         tweets_no_html = self.remove_html(tweets)
         tweets_punctuation = self.remove_punctuation(tweets_no_html)
         tweets_no_hashtag = self.replace_hashtags(tweets_punctuation)
@@ -15,8 +16,10 @@ class Preprocessing:
         self.tweets = self.replace_emojis(tweets_no_usernames)
         if self.test:
             self.labels = None
+            self.y_col_name = None
         else:
-            self.labels = dataset['class'].tolist()
+            self.y_col_name = y_col_name 
+            self.labels = dataset[self.y_col_name].tolist()
             self.labels = [str(lab) for lab in self.labels]
 
     def remove_punctuation(self, tweets):
