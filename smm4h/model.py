@@ -51,7 +51,6 @@ class Model:
 
         :param Xdata_train: CSV file of X train data read in via the read_from_file function
         :param Ydata_train: CSV file of Y train data read in via the read_from_file function
-        :
         :return: X & Y train data, word_index, labels
         """
 

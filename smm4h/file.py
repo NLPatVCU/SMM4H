@@ -7,13 +7,14 @@ class File:
     def read_from_file(self, file):
         """
         Reads external files and insert the content to a list. It also removes whitespace
-        characters like `\n` at the end of each lines.
+        characters like new line at the end of each lines.
 
         :param file: name of the input file.
         :type file: Str
         :return : content of the file
         :rtype: List
         """
+
         if not os.path.isfile(file):
             raise FileNotFoundError("Not a valid file path")
 
@@ -32,6 +33,7 @@ class File:
         :param file_path: path/name to the new file.
         :type file_path: Str
         """
+        
         with open(file_path, mode='w') as file:
             for item in list:
                 file.write(str(item)+"\n")

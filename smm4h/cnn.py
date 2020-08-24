@@ -19,7 +19,6 @@ from keras.models import *
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
 from keras_wc_embd import get_dicts_generator, get_embedding_layer, get_embedding_weights_from_file
-from file import File
 from tensorflow import set_random_seed
 set_random_seed(42)
 
