@@ -11,7 +11,7 @@ class File:
 
         :param file: name of the input file.
         :type file: Str
-        :return : content of the file
+        :return: content of the file
         :rtype: List
         """
 
@@ -33,7 +33,7 @@ class File:
         :param file_path: path/name to the new file.
         :type file_path: Str
         """
-        
+
         with open(file_path, mode='w') as file:
             for item in list:
                 file.write(str(item)+"\n")
