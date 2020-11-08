@@ -111,7 +111,7 @@ class Preprocessing:
             tweet_no_link = ""
             for word in tweet.split(' '):
                 if word.startswith('http://'):
-                    tweet_no_link+=" hyperlink "
+                    tweet_no_link+=" hyperlink " # we say in paper that we replace with "link" 
                 else:
                     tweet_no_link+=" " + word + " "
             tweet_correct_spacing = tweet_no_link.replace('  ', ' ').strip()
