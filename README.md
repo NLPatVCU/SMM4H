@@ -29,7 +29,7 @@ For more detailed documentation, check out: https://smm4h.readthedocs.io/en/late
 ## Reference
 ```bibtex
 @inproceedings{mahendran2020nlp,
-  title={NLP\@VCU: Identifying adverse effects in English tweets for unbalanced data},
+  title={NLP@VCU: Identifying adverse effects in English tweets for unbalanced data},
   author={Mahendran, Darshini and Lewis, Cora and McInnes, Bridget},
   booktitle={Proceedings of the Fifth Social Media Mining for Health Applications Workshop \& Shared Task},
   pages={158--160},
