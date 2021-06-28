@@ -27,6 +27,7 @@ In the experiments.py file, there is an example and comments for other possible 
 For more detailed documentation, check out: https://smm4h.readthedocs.io/en/latest 
   
 ## Reference
+```bibtex
 @inproceedings{mahendran2020nlp,
   title={NLP@ VCU: Identifying adverse effects in English tweets for unbalanced data},
   author={Mahendran, Darshini and Lewis, Cora and McInnes, Bridget},
@@ -34,3 +35,4 @@ For more detailed documentation, check out: https://smm4h.readthedocs.io/en/late
   pages={158--160},
   year={2020}
 }
+```
