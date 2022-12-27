@@ -96,7 +96,7 @@ Send2Trash==1.4.2
 simplegeneric==0.8.1
 six==1.11.0
 sklearn==0.0
-setuptools==41.0.0
+setuptools==65.5.1
 srsly==0.0.7
 statistics==1.0.3.5
 statsmodels==0.11.1
